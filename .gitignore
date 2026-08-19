@@ -1,0 +1,3 @@
+.solar_pv_data/
+__pycache__/
+*.pyc

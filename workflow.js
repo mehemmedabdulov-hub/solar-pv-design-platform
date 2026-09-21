@@ -65,6 +65,13 @@
   }
 
   function projectReady() {
+    const state = global.SolarPVProjectStateStore?.getState?.();
+    if (state) {
+      const lat = Number(state.location?.latitude);
+      const lng = Number(state.location?.longitude);
+      const coordinatesValid = Number.isFinite(lat) && lat >= -90 && lat <= 90 && Number.isFinite(lng) && lng >= -180 && lng <= 180;
+      return coordinatesValid && state.location?.confirmed === true && !!state.installation?.type && !global.SolarPVAlphaInstallationMigrationState?.isPending?.();
+    }
     const lat = byId("latitude")?.value;
     const lng = byId("longitude")?.value;
     const coordinatesValid = finite(lat) && Number(lat) >= -90 && Number(lat) <= 90 && finite(lng) && Number(lng) >= -180 && Number(lng) <= 180;

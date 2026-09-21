@@ -1,0 +1,476 @@
+== SOLAR v2.2 protected v2.1 regression baseline ==
+=== v2.1 independent calculation regression suite ===
+{
+  "suite": "v2.1 calculation regression",
+  "passed": 16,
+  "results": [
+    {
+      "id": "S1",
+      "category": "minimum-boundary DC cable",
+      "inputs": {
+        "operatingCurrentA": 1,
+        "designCurrentA": 1.25,
+        "protectionA": null,
+        "oneWayLengthM": 0.5,
+        "operatingVoltageV": 1000,
+        "maxDropPct": 3,
+        "currentDensity": 6,
+        "tempFactor": 1,
+        "resistivityOhmMm2M": 0.0175,
+        "standardCableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ]
+      },
+      "baseline": 2.5,
+      "expected": 2.5,
+      "fixed": 2.5,
+      "note": "No regression at the minimum standard conductor size.",
+      "pass": true
+    },
+    {
+      "id": "S2",
+      "category": "normal DC hot-voltage drop",
+      "inputs": {
+        "modules": 14,
+        "stcV": 563.36,
+        "hotV": 474.6308,
+        "operatingCurrentA": 15.41,
+        "designCurrentA": 20.325000000000003,
+        "protectionA": null,
+        "oneWayLengthM": 100,
+        "maxDropPct": 2,
+        "currentDensity": 5,
+        "tempFactor": 1.2,
+        "resistivityOhmMm2M": 0.0175,
+        "standardCableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ]
+      },
+      "baseline": 6,
+      "expected": 10,
+      "fixed": 10,
+      "note": "Baseline sizes at STC voltage (563.36 V); fixed sizes at hot Vmp (474.63 V).",
+      "pass": true
+    },
+    {
+      "id": "S3",
+      "category": "maximum long-run DC cable",
+      "inputs": {
+        "operatingCurrentA": 15.49,
+        "designCurrentA": 20.474999999999998,
+        "protectionA": null,
+        "oneWayLengthM": 500,
+        "operatingVoltageV": 400,
+        "maxDropPct": 1,
+        "currentDensity": 3,
+        "tempFactor": 1.25,
+        "resistivityOhmMm2M": 0.0175,
+        "standardCableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ]
+      },
+      "baseline": "same pure helper when given same basis",
+      "expected": 95,
+      "fixed": 95,
+      "note": "High length/tight drop limit selects the next available standard size without rounding down.",
+      "pass": true
+    },
+    {
+      "id": "S4",
+      "category": "edge MPPT mixed-length partition",
+      "inputs": {
+        "panelCount": 27,
+        "strictMin": 13,
+        "strictMax": 14,
+        "preferredMin": 13,
+        "preferredMax": 14,
+        "parallelCapacity": 2
+      },
+      "baseline": 1,
+      "expected": 2,
+      "fixed": 2,
+      "note": "Different series-module counts cannot be paralleled on one MPPT; each length class needs its own tracker group.",
+      "pass": true
+    },
+    {
+      "id": "S5",
+      "category": "normal AC loss percentage basis",
+      "inputs": {
+        "acPowerKW": 25,
+        "maxActivePowerKW": 27.5,
+        "voltage": 400,
+        "pf": 0.9,
+        "length": 30,
+        "cableSizeMm2": 16,
+        "lossW": 229.76345486111111
+      },
+      "baseline": 0.9190538194444444,
+      "expected": 0.8355034722222222,
+      "fixed": 0.8355034722222222,
+      "note": "v2.1 detailed design accumulates totalAcSizingPowerKW and uses it as the loss-percent denominator.",
+      "pass": true
+    },
+    {
+      "id": "S6",
+      "category": "edge uneven inverter clipping",
+      "inputs": {
+        "inverter1NetDcKW": 35,
+        "inverter2NetDcKW": 5,
+        "perInverterLimitKW": 27.5
+      },
+      "baseline": 0,
+      "expected": 7.5,
+      "fixed": 7.5,
+      "note": "Plant-level clipping incorrectly lets spare capacity on inverter 2 mask clipping on inverter 1.",
+      "pass": true
+    },
+    {
+      "id": "S6B",
+      "category": "edge max-active clipping basis",
+      "inputs": {
+        "netDcKW": 26,
+        "ratedAcKW": 25,
+        "maxActivePowerKW": 27.5
+      },
+      "baseline": 1,
+      "expected": 0,
+      "fixed": 0,
+      "note": "The selected inverter can export 27.5 kW active power, so 26 kW must not be clipped at the lower 25 kW nominal rating.",
+      "pass": true
+    },
+    {
+      "id": "S7",
+      "category": "unusual direct-beam geometry shade",
+      "inputs": {
+        "dcCapacityKW": 10,
+        "poaBeamKWm2": 0.8,
+        "poaDiffuseKWm2": 0.15,
+        "poaGroundKWm2": 0.05,
+        "ambientTempC": 25,
+        "noctC": 45,
+        "gammaPmax": 0,
+        "geometryShadeFraction": 0.5
+      },
+      "baseline": 5,
+      "expected": 6,
+      "fixed": 6,
+      "note": "3D ray blockage applies to direct beam only; diffuse and ground-reflected irradiance remain on the shaded fraction.",
+      "pass": true
+    },
+    {
+      "id": "S7B",
+      "category": "normal clipping-percent denominator",
+      "inputs": {
+        "inverterUnclipped": 100,
+        "clipping": 10,
+        "finalAcAfterOtherLosses": 87.318
+      },
+      "baseline": 10.275591360282785,
+      "expected": 10,
+      "fixed": 10,
+      "note": "Clipping fraction is the energy removed by clipping divided by inverter energy immediately before clipping; downstream AC/availability losses must not change that percentage.",
+      "pass": true
+    },
+    {
+      "id": "S8",
+      "category": "normal portrait ground pitch",
+      "inputs": {
+        "width": 1.134,
+        "height": 2.382,
+        "tilt": 25,
+        "elev": 20
+      },
+      "baseline": 4.924646649196193,
+      "expected": 2.3444791352596486,
+      "fixed": 2.3444791352596486,
+      "note": "v2.1 shares the same Grid-U panel dimension used by the layout engine.",
+      "pass": true
+    },
+    {
+      "id": "S9",
+      "category": "extreme but valid IRR",
+      "inputs": {
+        "cashflows": [
+          -100,
+          1600
+        ]
+      },
+      "baseline": null,
+      "expected": 15,
+      "fixed": 14.999999999985448,
+      "note": "Dynamic bracketing finds the 1500% root; old fixed 1000% ceiling returned N/A.",
+      "pass": true
+    },
+    {
+      "id": "S10",
+      "category": "normal capacity-factor denominator",
+      "inputs": {
+        "annualKWh": 160000,
+        "dcKW": 120,
+        "acKW": 100
+      },
+      "baseline": 0.15220700152207,
+      "expected": 0.182648401826484,
+      "fixed": 0.182648401826484,
+      "note": "Capacity factor is reported on AC nameplate capacity; DC kWp remains the denominator for specific yield and PR.",
+      "pass": true
+    },
+    {
+      "id": "S11",
+      "category": "unusual multiple-IRR cash flow",
+      "inputs": {
+        "cashflows": [
+          -100,
+          360,
+          -431,
+          171.6
+        ]
+      },
+      "baseline": 0.3000000046007335,
+      "expected": null,
+      "fixed": null,
+      "note": "The old bracketed solver reports the ~30% root even though the same cash flow also has ~10% and ~20% IRRs; v2.1 reports N/A instead of implying uniqueness.",
+      "pass": true
+    },
+    {
+      "id": "S11B",
+      "category": "edge fractional finance horizon",
+      "inputs": {
+        "analysisYears": 20.6
+      },
+      "baseline": 21,
+      "expected": "invalid input",
+      "fixed": "invalid input",
+      "note": "v2.0 rounded 20.6 years to 21; v2.1 requires an explicit integer year horizon from 1 through 50.",
+      "pass": true
+    },
+    {
+      "id": "S12",
+      "category": "edge stale-resource energy fallback",
+      "inputs": {
+        "dcKW": 100,
+        "staleGhi": 1800,
+        "irradiationSource": "stale-resource",
+        "hasMonthlyResource": false,
+        "pr": 0.8
+      },
+      "baseline": 144000,
+      "expected": null,
+      "fixed": null,
+      "note": "v2.1 refuses to generate annual energy/finance output from GHI tied to the previous project coordinates.",
+      "pass": true
+    },
+    {
+      "id": "S13",
+      "category": "normal manual no-resource fallback",
+      "inputs": {
+        "dcKW": 100,
+        "manualGhi": 1600,
+        "irradiationSource": "manual",
+        "hasMonthlyResource": false,
+        "pr": 0.8
+      },
+      "baseline": 128000,
+      "expected": 128000,
+      "fixed": 128000,
+      "note": "The explicit simplified PR fallback remains available when the user intentionally supplies annual GHI and no monthly resource is loaded.",
+      "pass": true
+    }
+  ]
+}
+=== v2.1 static/runtime wiring suite ===
+{
+  "ok": true,
+  "applicationVersion": "2.1",
+  "projectSchema": "2.0",
+  "activeV21Modules": [
+    "solar_pv_design_platform_v2.1_core.js",
+    "solar_pv_design_platform_v2.1_layout.js",
+    "solar_pv_design_platform_v2.1_rulepacks.js",
+    "solar_pv_design_platform_v2.1_electrical.js",
+    "solar_pv_design_platform_v2.1_energy.js",
+    "solar_pv_design_platform_v2.1_finance.js"
+  ],
+  "retainedCompatibilityModules": [
+    "solar_pv_design_platform_v1.9_repository.js",
+    "solar_pv_design_platform_v1.9_geometry.js",
+    "solar_pv_design_platform_v1.9_rules.js",
+    "solar_pv_design_platform_v1.9_worker.js"
+  ],
+  "externalBrowserLibraries": [
+    "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js",
+    "https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js"
+  ],
+  "sections": 17,
+  "calculationCorrectionsWired": true,
+  "databaseFilenamePreserved": true
+}
+=== v2.1 server/API suite ===
+[03/Sep/2026 06:06:09] "GET /api/solar-pv/health HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /index.html HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_core.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_layout.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_rulepacks.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_electrical.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_energy.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_finance.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v1.9_repository.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v1.9_geometry.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v1.9_rules.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v1.9_worker.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /schemas/solar_pv_rule_pack_schema_v2.0.0.json HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] code 404, message Not Found
+[03/Sep/2026 06:06:09] "GET /.gitignore HTTP/1.1" 404 -
+[03/Sep/2026 06:06:09] code 404, message Not Found
+[03/Sep/2026 06:06:09] "GET /solar_pv_design_platform_v2.1_server.py HTTP/1.1" 404 -
+[03/Sep/2026 06:06:09] code 404, message Not Found
+[03/Sep/2026 06:06:09] "GET /tests/test_v21_server.py HTTP/1.1" 404 -
+[03/Sep/2026 06:06:09] "POST /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 201 -
+[03/Sep/2026 06:06:09] "POST /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "POST /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 409 -
+[03/Sep/2026 06:06:09] "POST /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 201 -
+[03/Sep/2026 06:06:09] "GET /api/solar-pv/projects/v21-server-test/current HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "GET /api/solar-pv/projects/v21-server-test/revisions/1 HTTP/1.1" 200 -
+[03/Sep/2026 06:06:09] "POST /api/solar-pv/projects/v21-server-test/revisions HTTP/1.1" 400 -
+{
+  "ok": true,
+  "healthVersion": "2.1.0",
+  "projectSchema": "2.0",
+  "dbSchema": 1,
+  "revisions": 2,
+  "conflictEnforced": true,
+  "fingerprintVerification": true,
+  "calculationCorrectionCapability": true,
+  "dbFileCreated": true,
+  "legacyDatabaseFilenamePreserved": true
+}
+=== retained frozen-v1.9 source hash verification ===
+{'ok': True, 'frozenV19FilesVerified': 14, 'v19RuleEngineSha256': '7ecbfbe898b1445aab937d75c24930293e4bd8c3814243532c2fe3acc5e23957', 'v19ElectricalSha256': '841b423b625271c345e97e925e66bc069347319d75db4f5b51452057c68739fa', 'v19ServerSha256': 'ec5831476615fe2fb81bb5e71355b25f0325bcfe7ee3cb57227195a7860e6c79'}
+=== retained v1.9 rule-pack regression suite ===
+{
+  "ok": true,
+  "rulePacks": 4,
+  "baseFingerprint": "rule-7cf5c696",
+  "overlayFingerprint": "rule-af1c024b",
+  "baseDcDensity": 3.276,
+  "hotGroupedDcDensity": 1.7761199999999997,
+  "dcCopperSizeMm2": 10,
+  "dcAluminumSizeMm2": 10,
+  "acCableSizeMm2": 35
+}
+=== retained v2.0 rule-pack contract suite ===
+{
+  "ok": true,
+  "rulePackSchemaVersion": "2.0.0",
+  "compatibilityPacks": 4,
+  "goldenFixtures": 4,
+  "nativeFixtureFingerprint": "rulepack-v2-sha256-04d39129bdbf912b9b7970e01d3c03861e13f949a54e0669b1c057355ecbd260",
+  "canonicalBytes": 18085,
+  "goldenSummary": [
+    {
+      "packId": "SPVDP-CONSERVATIVE-PRELIM-2026",
+      "baseFingerprint": "rule-3076459a"
+    },
+    {
+      "packId": "SPVDP-GLOBAL-PRELIM-2026",
+      "baseFingerprint": "rule-7cf5c696"
+    },
+    {
+      "packId": "SPVDP-HOT-CLIMATE-PRELIM-2026",
+      "baseFingerprint": "rule-aaf831c0"
+    },
+    {
+      "packId": "SPVDP-LEGACY-V17",
+      "baseFingerprint": "rule-953c401d"
+    }
+  ],
+  "unsupportedCapability": {
+    "state": "unsupported",
+    "validationStatus": "not-validated",
+    "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+  }
+}
+=== retained v2.0 project migration suite ===
+{
+  "ok": true,
+  "source": "index.html:migrateProjectSnapshot",
+  "supportedLegacySchemasTested": [
+    "1.7-alpha6",
+    "1.8",
+    "1.8-final",
+    "1.8-rulepacks",
+    "1.9"
+  ],
+  "projectSchema": "2.0",
+  "rulePackSchema": "2.0.0",
+  "ruleBasisDriftRejected": true,
+  "unknownSchemaRejected": true
+}
+=== ALL V2.1 VERIFICATION CHECKS PASSED ===
+== SOLAR v2.2 drawing model ==
+v2.2 SLD drawing model: PASS (9 compact nodes, 10 detailed nodes, 8 edges)
+== SOLAR v2.2 panel command history ==
+v2.2 panel command history: PASS
+== SOLAR v2.2 exports ==
+v2.2 export helpers: PASS (710 PDF bytes, 486 ZIP bytes)
+v2.2 Engineering Pack ZIP compatibility: PASS
+== SOLAR v2.2 static / compatibility wiring ==
+v2.2 static/compatibility wiring: PASS
+[03/Sep/2026 06:06:13] "GET /ux-v2.2.css HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /notifications.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /equipment-ui.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /workflow.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /panel-editor.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /sld-drawing-model.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /sld-editor.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /results-ui.js HTTP/1.1" 200 -
+[03/Sep/2026 06:06:13] "GET /persistence-ui.js HTTP/1.1" 200 -
+v2.2 server static assets: PASS (9 new UI/drawing assets served by existing v2.1 server)
+ALL V2.2 VERIFICATION CHECKS PASSED

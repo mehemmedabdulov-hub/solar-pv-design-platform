@@ -1,0 +1,25 @@
+{
+  "name": "SOLAR v2.3 Alpha Beta-Ready",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.13-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    }
+  },
+  "postCreateCommand": "python3 -m pip install -r requirements-dev.txt && python3 -m playwright install --with-deps chromium",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "Solar PV App",
+      "onAutoForward": "notify",
+      "visibility": "private"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.eol": "\n"
+      }
+    }
+  }
+}

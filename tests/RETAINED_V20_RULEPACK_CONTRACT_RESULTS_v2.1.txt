@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "rulePackSchemaVersion": "2.0.0",
+  "compatibilityPacks": 4,
+  "goldenFixtures": 4,
+  "nativeFixtureFingerprint": "rulepack-v2-sha256-04d39129bdbf912b9b7970e01d3c03861e13f949a54e0669b1c057355ecbd260",
+  "canonicalBytes": 18085,
+  "goldenSummary": [
+    {
+      "packId": "SPVDP-CONSERVATIVE-PRELIM-2026",
+      "baseFingerprint": "rule-3076459a"
+    },
+    {
+      "packId": "SPVDP-GLOBAL-PRELIM-2026",
+      "baseFingerprint": "rule-7cf5c696"
+    },
+    {
+      "packId": "SPVDP-HOT-CLIMATE-PRELIM-2026",
+      "baseFingerprint": "rule-aaf831c0"
+    },
+    {
+      "packId": "SPVDP-LEGACY-V17",
+      "baseFingerprint": "rule-953c401d"
+    }
+  ],
+  "unsupportedCapability": {
+    "state": "unsupported",
+    "validationStatus": "not-validated",
+    "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+  }
+}

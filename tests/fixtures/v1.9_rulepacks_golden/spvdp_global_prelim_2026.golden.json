@@ -1,0 +1,676 @@
+{
+  "fixtureVersion": "1.0.0",
+  "sourceApplicationVersion": "1.9",
+  "sourceRuleEngineVersion": "1.9.0",
+  "generatedFrom": "solar_pv_design_platform_v1.9_rules.js",
+  "packInfo": {
+    "id": "SPVDP-GLOBAL-PRELIM-2026",
+    "version": "1.0.0",
+    "label": "Global preliminary engineering defaults",
+    "jurisdiction": "Generic / project-specific verification required",
+    "standardReference": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+    "completeness": "preliminary",
+    "description": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific."
+  },
+  "validation": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  },
+  "invalidValidationProbe": {
+    "valid": false,
+    "errors": [
+      "Cable-size table must be a non-empty numeric array."
+    ],
+    "warnings": []
+  },
+  "cases": {
+    "base": {
+      "config": {
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "conductorMaterial": "copper",
+        "insulation": "xlpe90",
+        "installationMethod": "tray",
+        "ambientTempC": 40,
+        "groupedCircuits": 2,
+        "customOverlay": {}
+      },
+      "context": {
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          "Rule-pack results remain preliminary: short-circuit duty, breaking capacity, disconnection time, full earthing design, manufacturer coordination, and complete jurisdictional compliance still require independent verification."
+        ],
+        "engineVersion": "1.9.0",
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "packVersion": "1.0.0",
+        "packLabel": "Global preliminary engineering defaults",
+        "completeness": "preliminary",
+        "jurisdiction": "Generic / project-specific verification required",
+        "standardReference": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+        "description": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific.",
+        "fingerprint": "rule-7cf5c696",
+        "conductorMaterial": "copper",
+        "conductorMaterialLabel": "Copper",
+        "insulation": "xlpe90",
+        "installationMethod": "tray",
+        "ambientTempC": 40,
+        "groupedCircuits": 2,
+        "resistivityOhmMm2M": 0.0175,
+        "materialAmpacityFactor": 1,
+        "insulationFactor": 1,
+        "installationFactor": 0.9,
+        "ambientFactor": 0.91,
+        "groupingFactor": 0.8,
+        "dcCurrentDensityAmm2": 3.276,
+        "acCurrentDensityAmm2": 2.9484,
+        "dcDesignCurrentFactor": 1.25,
+        "acDesignCurrentFactor": 1.25,
+        "conductorTempFactor": 1.2,
+        "dcMaxVoltageDropPct": 2,
+        "acMaxVoltageDropPct": 2,
+        "cableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ],
+        "protectionRatingsA": [
+          6,
+          10,
+          12,
+          15,
+          16,
+          20,
+          25,
+          30,
+          32,
+          35,
+          40,
+          50,
+          63,
+          80,
+          100,
+          125,
+          160,
+          200,
+          250,
+          315,
+          400,
+          500,
+          630,
+          800,
+          1000,
+          1250,
+          1600
+        ],
+        "stringFuseParallelThreshold": 2,
+        "stringFuseDesignMultiplier": 1,
+        "acBreakerDesignMultiplier": 1,
+        "dcIsolatorDesignMultiplier": 1,
+        "peRules": [
+          {
+            "phaseMaxMm2": 16,
+            "mode": "same"
+          },
+          {
+            "phaseMaxMm2": 35,
+            "mode": "fixed",
+            "valueMm2": 16
+          },
+          {
+            "phaseMaxMm2": 10000,
+            "mode": "factor",
+            "factor": 0.5
+          }
+        ],
+        "spdDc": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination",
+        "spdAc": "Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+        "minimumEdgeSetbackM": 0.3,
+        "minimumObstacleClearanceM": 0.3,
+        "accessFireNote": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks.",
+        "trace": [
+          {
+            "rule": "Rule pack",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Global preliminary engineering defaults",
+            "basis": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific."
+          },
+          {
+            "rule": "Jurisdiction metadata",
+            "source": "Rule pack",
+            "value": "Generic / project-specific verification required",
+            "basis": "Provenance only; does not certify code compliance."
+          },
+          {
+            "rule": "Standard/reference metadata",
+            "source": "Rule pack",
+            "value": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+            "basis": "Reference metadata; complete applicable-standard implementation is not claimed."
+          },
+          {
+            "rule": "Conductor material",
+            "source": "Project configuration",
+            "value": "Copper",
+            "basis": "Resistivity 0.0175 Ω·mm²/m; ampacity factor 1.000."
+          },
+          {
+            "rule": "Ambient correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.910",
+            "basis": "40.0°C design ambient."
+          },
+          {
+            "rule": "Grouping correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.800",
+            "basis": "2 grouped circuit(s)."
+          },
+          {
+            "rule": "Installation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.900",
+            "basis": "tray"
+          },
+          {
+            "rule": "Insulation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "1.000",
+            "basis": "xlpe90"
+          },
+          {
+            "rule": "Resolved DC current density",
+            "source": "Rule-pack factors",
+            "value": "3.276 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Resolved AC current density",
+            "source": "Rule-pack factors",
+            "value": "2.948 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Voltage-drop limits",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 2.00% / AC 2.00%",
+            "basis": "Maximum circuit voltage-drop assumptions."
+          },
+          {
+            "rule": "Design-current factors",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 1.250 / AC 1.250",
+            "basis": "Preliminary sizing multipliers; verify applicable continuous-current and PV source-circuit rules."
+          },
+          {
+            "rule": "SPD basis",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination; Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+            "basis": "Preliminary SPD type prompt only; final voltage/lightning/coordination study required."
+          },
+          {
+            "rule": "Access / setback prompt",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "edge ≥ 0.30 m; obstacle ≥ 0.30 m",
+            "basis": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks."
+          },
+          {
+            "rule": "Rule fingerprint",
+            "source": "SolarPVRulePacks 1.9.0",
+            "value": "rule-7cf5c696",
+            "basis": "Deterministic fingerprint of resolved rule-pack configuration and project overlay."
+          }
+        ]
+      }
+    },
+    "alternate": {
+      "config": {
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "conductorMaterial": "aluminum",
+        "insulation": "pvc70",
+        "installationMethod": "conduit",
+        "ambientTempC": 55,
+        "groupedCircuits": 6,
+        "customOverlay": {}
+      },
+      "context": {
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          "Rule-pack results remain preliminary: short-circuit duty, breaking capacity, disconnection time, full earthing design, manufacturer coordination, and complete jurisdictional compliance still require independent verification."
+        ],
+        "engineVersion": "1.9.0",
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "packVersion": "1.0.0",
+        "packLabel": "Global preliminary engineering defaults",
+        "completeness": "preliminary",
+        "jurisdiction": "Generic / project-specific verification required",
+        "standardReference": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+        "description": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific.",
+        "fingerprint": "rule-9856d0f9",
+        "conductorMaterial": "aluminum",
+        "conductorMaterialLabel": "Aluminium",
+        "insulation": "pvc70",
+        "installationMethod": "conduit",
+        "ambientTempC": 55,
+        "groupedCircuits": 6,
+        "resistivityOhmMm2M": 0.0282,
+        "materialAmpacityFactor": 0.8,
+        "insulationFactor": 0.9,
+        "installationFactor": 0.82,
+        "ambientFactor": 0.76,
+        "groupingFactor": 0.57,
+        "dcCurrentDensityAmm2": 1.2788064,
+        "acCurrentDensityAmm2": 1.15092576,
+        "dcDesignCurrentFactor": 1.25,
+        "acDesignCurrentFactor": 1.25,
+        "conductorTempFactor": 1.2,
+        "dcMaxVoltageDropPct": 2,
+        "acMaxVoltageDropPct": 2,
+        "cableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ],
+        "protectionRatingsA": [
+          6,
+          10,
+          12,
+          15,
+          16,
+          20,
+          25,
+          30,
+          32,
+          35,
+          40,
+          50,
+          63,
+          80,
+          100,
+          125,
+          160,
+          200,
+          250,
+          315,
+          400,
+          500,
+          630,
+          800,
+          1000,
+          1250,
+          1600
+        ],
+        "stringFuseParallelThreshold": 2,
+        "stringFuseDesignMultiplier": 1,
+        "acBreakerDesignMultiplier": 1,
+        "dcIsolatorDesignMultiplier": 1,
+        "peRules": [
+          {
+            "phaseMaxMm2": 16,
+            "mode": "same"
+          },
+          {
+            "phaseMaxMm2": 35,
+            "mode": "fixed",
+            "valueMm2": 16
+          },
+          {
+            "phaseMaxMm2": 10000,
+            "mode": "factor",
+            "factor": 0.5
+          }
+        ],
+        "spdDc": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination",
+        "spdAc": "Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+        "minimumEdgeSetbackM": 0.3,
+        "minimumObstacleClearanceM": 0.3,
+        "accessFireNote": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks.",
+        "trace": [
+          {
+            "rule": "Rule pack",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Global preliminary engineering defaults",
+            "basis": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific."
+          },
+          {
+            "rule": "Jurisdiction metadata",
+            "source": "Rule pack",
+            "value": "Generic / project-specific verification required",
+            "basis": "Provenance only; does not certify code compliance."
+          },
+          {
+            "rule": "Standard/reference metadata",
+            "source": "Rule pack",
+            "value": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+            "basis": "Reference metadata; complete applicable-standard implementation is not claimed."
+          },
+          {
+            "rule": "Conductor material",
+            "source": "Project configuration",
+            "value": "Aluminium",
+            "basis": "Resistivity 0.0282 Ω·mm²/m; ampacity factor 0.800."
+          },
+          {
+            "rule": "Ambient correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.760",
+            "basis": "55.0°C design ambient."
+          },
+          {
+            "rule": "Grouping correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.570",
+            "basis": "6 grouped circuit(s)."
+          },
+          {
+            "rule": "Installation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.820",
+            "basis": "conduit"
+          },
+          {
+            "rule": "Insulation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.900",
+            "basis": "pvc70"
+          },
+          {
+            "rule": "Resolved DC current density",
+            "source": "Rule-pack factors",
+            "value": "1.279 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Resolved AC current density",
+            "source": "Rule-pack factors",
+            "value": "1.151 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Voltage-drop limits",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 2.00% / AC 2.00%",
+            "basis": "Maximum circuit voltage-drop assumptions."
+          },
+          {
+            "rule": "Design-current factors",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 1.250 / AC 1.250",
+            "basis": "Preliminary sizing multipliers; verify applicable continuous-current and PV source-circuit rules."
+          },
+          {
+            "rule": "SPD basis",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination; Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+            "basis": "Preliminary SPD type prompt only; final voltage/lightning/coordination study required."
+          },
+          {
+            "rule": "Access / setback prompt",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "edge ≥ 0.30 m; obstacle ≥ 0.30 m",
+            "basis": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks."
+          },
+          {
+            "rule": "Rule fingerprint",
+            "source": "SolarPVRulePacks 1.9.0",
+            "value": "rule-9856d0f9",
+            "basis": "Deterministic fingerprint of resolved rule-pack configuration and project overlay."
+          }
+        ]
+      }
+    },
+    "safeOverlay": {
+      "config": {
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "conductorMaterial": "copper",
+        "insulation": "xlpe90",
+        "installationMethod": "tray",
+        "ambientTempC": 40,
+        "groupedCircuits": 2,
+        "customOverlay": {
+          "electrical": {
+            "dcMaxVoltageDropPct": 1.25,
+            "acMaxVoltageDropPct": 1.75
+          },
+          "site": {
+            "minimumEdgeSetbackM": 0.45
+          }
+        }
+      },
+      "context": {
+        "valid": true,
+        "errors": [],
+        "warnings": [
+          "A project-specific JSON overlay modifies the built-in rule pack. Review the exported overlay and fingerprint as part of engineering QA.",
+          "Rule-pack results remain preliminary: short-circuit duty, breaking capacity, disconnection time, full earthing design, manufacturer coordination, and complete jurisdictional compliance still require independent verification."
+        ],
+        "engineVersion": "1.9.0",
+        "packId": "SPVDP-GLOBAL-PRELIM-2026",
+        "packVersion": "1.0.0",
+        "packLabel": "Global preliminary engineering defaults",
+        "completeness": "preliminary",
+        "jurisdiction": "Generic / project-specific verification required",
+        "standardReference": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+        "description": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific.",
+        "fingerprint": "rule-b1b005d8",
+        "conductorMaterial": "copper",
+        "conductorMaterialLabel": "Copper",
+        "insulation": "xlpe90",
+        "installationMethod": "tray",
+        "ambientTempC": 40,
+        "groupedCircuits": 2,
+        "resistivityOhmMm2M": 0.0175,
+        "materialAmpacityFactor": 1,
+        "insulationFactor": 1,
+        "installationFactor": 0.9,
+        "ambientFactor": 0.91,
+        "groupingFactor": 0.8,
+        "dcCurrentDensityAmm2": 3.276,
+        "acCurrentDensityAmm2": 2.9484,
+        "dcDesignCurrentFactor": 1.25,
+        "acDesignCurrentFactor": 1.25,
+        "conductorTempFactor": 1.2,
+        "dcMaxVoltageDropPct": 1.25,
+        "acMaxVoltageDropPct": 1.75,
+        "cableSizesMm2": [
+          2.5,
+          4,
+          6,
+          10,
+          16,
+          25,
+          35,
+          50,
+          70,
+          95,
+          120,
+          150,
+          185,
+          240,
+          300,
+          400
+        ],
+        "protectionRatingsA": [
+          6,
+          10,
+          12,
+          15,
+          16,
+          20,
+          25,
+          30,
+          32,
+          35,
+          40,
+          50,
+          63,
+          80,
+          100,
+          125,
+          160,
+          200,
+          250,
+          315,
+          400,
+          500,
+          630,
+          800,
+          1000,
+          1250,
+          1600
+        ],
+        "stringFuseParallelThreshold": 2,
+        "stringFuseDesignMultiplier": 1,
+        "acBreakerDesignMultiplier": 1,
+        "dcIsolatorDesignMultiplier": 1,
+        "peRules": [
+          {
+            "phaseMaxMm2": 16,
+            "mode": "same"
+          },
+          {
+            "phaseMaxMm2": 35,
+            "mode": "fixed",
+            "valueMm2": 16
+          },
+          {
+            "phaseMaxMm2": 10000,
+            "mode": "factor",
+            "factor": 0.5
+          }
+        ],
+        "spdDc": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination",
+        "spdAc": "Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+        "minimumEdgeSetbackM": 0.45,
+        "minimumObstacleClearanceM": 0.3,
+        "accessFireNote": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks.",
+        "trace": [
+          {
+            "rule": "Rule pack",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Global preliminary engineering defaults",
+            "basis": "Balanced preliminary defaults for deterministic concept design. Final ampacity tables, protection coordination, earthing, SPD, access/fire and local code checks remain project-specific."
+          },
+          {
+            "rule": "Jurisdiction metadata",
+            "source": "Rule pack",
+            "value": "Generic / project-specific verification required",
+            "basis": "Provenance only; does not certify code compliance."
+          },
+          {
+            "rule": "Standard/reference metadata",
+            "source": "Rule pack",
+            "value": "IEC/NEC-style engineering concepts; not a complete implementation of either standard",
+            "basis": "Reference metadata; complete applicable-standard implementation is not claimed."
+          },
+          {
+            "rule": "Conductor material",
+            "source": "Project configuration",
+            "value": "Copper",
+            "basis": "Resistivity 0.0175 Ω·mm²/m; ampacity factor 1.000."
+          },
+          {
+            "rule": "Ambient correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.910",
+            "basis": "40.0°C design ambient."
+          },
+          {
+            "rule": "Grouping correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.800",
+            "basis": "2 grouped circuit(s)."
+          },
+          {
+            "rule": "Installation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "0.900",
+            "basis": "tray"
+          },
+          {
+            "rule": "Insulation correction",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "1.000",
+            "basis": "xlpe90"
+          },
+          {
+            "rule": "Resolved DC current density",
+            "source": "Rule-pack factors",
+            "value": "3.276 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Resolved AC current density",
+            "source": "Rule-pack factors",
+            "value": "2.948 A/mm²",
+            "basis": "Preliminary current-density sizing heuristic after configured correction factors."
+          },
+          {
+            "rule": "Voltage-drop limits",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 1.25% / AC 1.75%",
+            "basis": "Maximum circuit voltage-drop assumptions."
+          },
+          {
+            "rule": "Design-current factors",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "DC 1.250 / AC 1.250",
+            "basis": "Preliminary sizing multipliers; verify applicable continuous-current and PV source-circuit rules."
+          },
+          {
+            "rule": "SPD basis",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination; Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination",
+            "basis": "Preliminary SPD type prompt only; final voltage/lightning/coordination study required."
+          },
+          {
+            "rule": "Access / setback prompt",
+            "source": "SPVDP-GLOBAL-PRELIM-2026@1.0.0",
+            "value": "edge ≥ 0.45 m; obstacle ≥ 0.30 m",
+            "basis": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks."
+          },
+          {
+            "rule": "Rule fingerprint",
+            "source": "SolarPVRulePacks 1.9.0",
+            "value": "rule-b1b005d8",
+            "basis": "Deterministic fingerprint of resolved rule-pack configuration and project overlay."
+          }
+        ]
+      }
+    }
+  },
+  "helpers": {
+    "nextCableAt17Mm2": 25,
+    "nextProtectionAt91A": 100,
+    "pe10Mm2": 10,
+    "pe25Mm2": 16,
+    "pe50Mm2": 25,
+    "pe95Mm2": 50
+  }
+}

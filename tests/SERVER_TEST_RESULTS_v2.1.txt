@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "healthVersion": "2.1.0",
+  "projectSchema": "2.0",
+  "dbSchema": 1,
+  "revisions": 2,
+  "conflictEnforced": true,
+  "fingerprintVerification": true,
+  "calculationCorrectionCapability": true,
+  "dbFileCreated": true,
+  "legacyDatabaseFilenamePreserved": true
+}

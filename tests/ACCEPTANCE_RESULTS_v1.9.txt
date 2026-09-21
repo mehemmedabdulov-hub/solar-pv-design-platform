@@ -1,0 +1,24 @@
+Solar PV Design Platform v1.9 final - automated acceptance results
+Date: 2026-08-28
+
+STATIC / SYNTAX
+{'ok': True, 'sections': 17, 'localModules': 8, 'externalBrowserLibraries': ['https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', 'https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js'], 'inlineScriptBytes': 306068}
+
+RULE ENGINE
+{
+  "ok": true,
+  "rulePacks": 4,
+  "baseFingerprint": "rule-7cf5c696",
+  "overlayFingerprint": "rule-af1c024b",
+  "baseDcDensity": 3.276,
+  "hotGroupedDcDensity": 1.7761199999999997,
+  "dcCopperSizeMm2": 10,
+  "dcAluminumSizeMm2": 10,
+  "acCableSizeMm2": 35
+}
+
+SERVER / REPOSITORY
+{'ok': True, 'healthVersion': '1.9.0', 'projectSchema': '1.9', 'revisions': 2, 'conflictEnforced': True, 'dbFileCreated': True}
+
+BROWSER SMOKE
+LIMITED: the container's Chromium process timed out before requesting index.html; no browser-runtime pass is claimed from this environment.

@@ -1,0 +1,26 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Solar PV Server",
+      "type": "shell",
+      "command": "python3 solar_pv_design_platform_v2.1_server.py --port 8000",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Run SOLAR v2.2 Verification",
+      "type": "shell",
+      "command": "bash tests/run_v22_verification.sh",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 "use strict";
 
 const SOLAR_PV_WORKER_VERSION =
-  "1.7.0";
+  "1.9.0";
 
 function summarizePointCloudTask(payload) {
   const pointCount =

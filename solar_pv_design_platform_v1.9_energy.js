@@ -1,7 +1,7 @@
 "use strict";
 
-/* Solar PV Design Platform v1.7 - monthly energy engine
-   Extracted from the current Alpha5 deterministic engine without calculation rewrites. */
+/* Solar PV Design Platform v1.9 - monthly energy engine
+   Retained from the verified v1.7 deterministic engine and carried forward in the cumulative v1.9 architecture. */
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -289,4 +289,4 @@ function calculateEnergySimulation(dcCapacityKW, totalAcCapacityKW, module) {
   };
 }
 
-globalThis.SolarPVEnergyEngineModule = Object.freeze({version:"1.7.0",deterministic:true,functions:Object.freeze(["clamp", "degreesToRadians", "normalizeSurfaceAzimuth", "solarVectorForLocalSolarTime", "arrayPlaneNormal", "getEnergySimulationInputs", "validateEnergySimulationInputs", "buildRepresentativeDayRadiation", "calculateEnergySimulation"])});
+globalThis.SolarPVEnergyEngineModule = Object.freeze({version:"1.9.0",deterministic:true,functions:Object.freeze(["clamp", "degreesToRadians", "normalizeSurfaceAzimuth", "solarVectorForLocalSolarTime", "arrayPlaneNormal", "getEnergySimulationInputs", "validateEnergySimulationInputs", "buildRepresentativeDayRadiation", "calculateEnergySimulation"])});

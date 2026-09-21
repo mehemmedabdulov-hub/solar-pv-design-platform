@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "rulePacks": 4,
+  "baseFingerprint": "rule-7cf5c696",
+  "overlayFingerprint": "rule-af1c024b",
+  "baseDcDensity": 3.276,
+  "hotGroupedDcDensity": 1.7761199999999997,
+  "dcCopperSizeMm2": 10,
+  "dcAluminumSizeMm2": 10,
+  "acCableSizeMm2": 35
+}

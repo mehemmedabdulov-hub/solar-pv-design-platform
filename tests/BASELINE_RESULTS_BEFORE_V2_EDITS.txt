@@ -1,0 +1,46 @@
+Solar PV Design Platform v1.9 Final - baseline verification before v2.0 edits
+Source baseline date: 2026-08-28
+Coding session date: 2026-08-29
+
+WORKING METHOD / INTEGRITY
+- Primary coding source: solar_pv_design_platform_v1.9_final_sources_2026-08-28.zip
+- Extracted into a new v2.0 working directory; source ZIP left untouched.
+- Source archive SHA-256:
+  1943e223b6e2cfd9b7f65248e4c2242598178702dac26e667ec8d0e1405c49ce
+- Result: PASS; matches the authoritative handoff value.
+- ZIP compressed-data integrity (`unzip -tq`): PASS.
+- Frozen `SOURCE_MANIFEST_SHA256.txt` verification (`sha256sum -c`): PASS for every listed source/test file before any edit.
+
+EXACT BASELINE COMMAND 1
+python3 tests/test_v19_static.py
+RESULT: PASS
+OUTPUT:
+{'ok': True, 'sections': 17, 'localModules': 8, 'externalBrowserLibraries': ['https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', 'https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js'], 'inlineScriptBytes': 306068}
+
+EXACT BASELINE COMMAND 2
+node tests/test_v19_rulepacks.js
+RESULT: PASS
+OUTPUT:
+{
+  "ok": true,
+  "rulePacks": 4,
+  "baseFingerprint": "rule-7cf5c696",
+  "overlayFingerprint": "rule-af1c024b",
+  "baseDcDensity": 3.276,
+  "hotGroupedDcDensity": 1.7761199999999997,
+  "dcCopperSizeMm2": 10,
+  "dcAluminumSizeMm2": 10,
+  "acCableSizeMm2": 35
+}
+
+EXACT BASELINE COMMAND 3
+python3 tests/test_v19_server.py
+RESULT: PASS
+OUTPUT SUMMARY:
+{'ok': True, 'healthVersion': '1.9.0', 'projectSchema': '1.9', 'revisions': 2, 'conflictEnforced': True, 'dbFileCreated': True}
+
+BASELINE BROWSER STATUS
+No successful browser UAT was claimed by the v1.9 handoff. During this coding session, Chromium 144 was later confirmed present, but administrator policy blocks both local HTTP and file navigation with `net::ERR_BLOCKED_BY_ADMINISTRATOR` before the application page is requested. This environment therefore cannot provide the requested real-page browser UAT; this is an environment limitation, not a baseline test failure.
+
+BASELINE DECISION
+All three required pre-edit acceptance commands passed. Development proceeded from this exact v1.9 source tree. No pre-existing baseline failure was hidden or patched.

@@ -1,0 +1,117 @@
+=== Node ===
+v22.16.0
+=== Python ===
+Python 3.13.5
+=== existing JS tests ===
+--- tests/test_v19_rulepacks.js
+{
+  "ok": true,
+  "rulePacks": 4,
+  "baseFingerprint": "rule-7cf5c696",
+  "overlayFingerprint": "rule-af1c024b",
+  "baseDcDensity": 3.276,
+  "hotGroupedDcDensity": 1.7761199999999997,
+  "dcCopperSizeMm2": 10,
+  "dcAluminumSizeMm2": 10,
+  "acCableSizeMm2": 35
+}
+--- tests/test_v20_deliverable_provenance.js
+{
+  "ok": true,
+  "source": "index.html deliverable functions",
+  "sldProvenance": true,
+  "bomProvenance": true,
+  "reportProvenanceSource": true,
+  "legacyRuleFingerprintPreserved": "rule-7cf5c696",
+  "formalRuleSchema": "2.0.0",
+  "formalContractFingerprint": "rulepack-v2-sha256-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "complianceClaim": "not-permitted"
+}
+--- tests/test_v20_project_migration.js
+{
+  "ok": true,
+  "source": "index.html:migrateProjectSnapshot",
+  "supportedLegacySchemasTested": [
+    "1.7-alpha6",
+    "1.8",
+    "1.8-final",
+    "1.8-rulepacks",
+    "1.9"
+  ],
+  "projectSchema": "2.0",
+  "rulePackSchema": "2.0.0",
+  "ruleBasisDriftRejected": true,
+  "unknownSchemaRejected": true
+}
+--- tests/test_v20_rulepacks.js
+{
+  "ok": true,
+  "rulePackSchemaVersion": "2.0.0",
+  "compatibilityPacks": 4,
+  "goldenFixtures": 4,
+  "nativeFixtureFingerprint": "rulepack-v2-sha256-04d39129bdbf912b9b7970e01d3c03861e13f949a54e0669b1c057355ecbd260",
+  "canonicalBytes": 18085,
+  "goldenSummary": [
+    {
+      "packId": "SPVDP-CONSERVATIVE-PRELIM-2026",
+      "baseFingerprint": "rule-3076459a"
+    },
+    {
+      "packId": "SPVDP-GLOBAL-PRELIM-2026",
+      "baseFingerprint": "rule-7cf5c696"
+    },
+    {
+      "packId": "SPVDP-HOT-CLIMATE-PRELIM-2026",
+      "baseFingerprint": "rule-aaf831c0"
+    },
+    {
+      "packId": "SPVDP-LEGACY-V17",
+      "baseFingerprint": "rule-953c401d"
+    }
+  ],
+  "unsupportedCapability": {
+    "state": "unsupported",
+    "validationStatus": "not-validated",
+    "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+  }
+}
+=== existing Python tests ===
+--- tests/test_v19_server.py
+[29/Aug/2026 10:48:02] "GET /api/solar-pv/health HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /index.html HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /solar_pv_design_platform_v1.9_core.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /solar_pv_design_platform_v1.9_rules.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /solar_pv_design_platform_v1.9_electrical.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /solar_pv_design_platform_v1.9_worker.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "POST /api/solar-pv/projects/v19-server-test/revisions HTTP/1.1" 201 -
+[29/Aug/2026 10:48:02] "POST /api/solar-pv/projects/v19-server-test/revisions HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "POST /api/solar-pv/projects/v19-server-test/revisions HTTP/1.1" 409 -
+[29/Aug/2026 10:48:02] "POST /api/solar-pv/projects/v19-server-test/revisions HTTP/1.1" 201 -
+[29/Aug/2026 10:48:02] "GET /api/solar-pv/projects/v19-server-test/current HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /api/solar-pv/projects/v19-server-test/revisions HTTP/1.1" 200 -
+[29/Aug/2026 10:48:02] "GET /api/solar-pv/projects/v19-server-test/revisions/1 HTTP/1.1" 200 -
+{'ok': True, 'healthVersion': '1.9.0', 'projectSchema': '1.9', 'revisions': 2, 'conflictEnforced': True, 'dbFileCreated': True}
+--- tests/test_v19_static.py
+{'ok': True, 'mode': 'v1.9-frozen-modules-hosted-by-v2.0-alpha1', 'sections': 17, 'retainedV19Modules': 7, 'externalBrowserLibraries': ['https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', 'https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js'], 'legacyDatabaseFilenamePreserved': True}
+--- tests/test_v20_frozen_v19_hashes.py
+{'ok': True, 'frozenV19FilesVerified': 14, 'v19RuleEngineSha256': '7ecbfbe898b1445aab937d75c24930293e4bd8c3814243532c2fe3acc5e23957', 'v19ElectricalSha256': '841b423b625271c345e97e925e66bc069347319d75db4f5b51452057c68739fa', 'v19ServerSha256': 'ec5831476615fe2fb81bb5e71355b25f0325bcfe7ee3cb57227195a7860e6c79'}
+--- tests/test_v20_server.py
+[29/Aug/2026 10:48:05] "GET /api/solar-pv/health HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /index.html HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /solar_pv_design_platform_v2.0_core.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /solar_pv_design_platform_v1.9_rules.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /solar_pv_design_platform_v2.0_rulepacks.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /solar_pv_design_platform_v1.9_electrical.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /solar_pv_design_platform_v1.9_worker.js HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /schemas/solar_pv_rule_pack_schema_v2.0.0.json HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "POST /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 201 -
+[29/Aug/2026 10:48:05] "POST /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "POST /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 409 -
+[29/Aug/2026 10:48:05] "POST /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 201 -
+[29/Aug/2026 10:48:05] "GET /api/solar-pv/projects/v20-server-test/current HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "GET /api/solar-pv/projects/v20-server-test/revisions/1 HTTP/1.1" 200 -
+[29/Aug/2026 10:48:05] "POST /api/solar-pv/projects/v20-server-test/revisions HTTP/1.1" 400 -
+{'ok': True, 'healthVersion': '2.0.0-alpha.1', 'projectSchema': '2.0', 'dbSchema': 1, 'revisions': 2, 'conflictEnforced': True, 'fingerprintVerification': True, 'dbFileCreated': True, 'legacyDatabaseFilenamePreserved': True}
+--- tests/test_v20_static.py
+{'ok': True, 'sections': 17, 'v2Modules': ['solar_pv_design_platform_v2.0_core.js', 'solar_pv_design_platform_v2.0_rulepacks.js'], 'retainedModules': ['solar_pv_design_platform_v1.9_repository.js', 'solar_pv_design_platform_v1.9_geometry.js', 'solar_pv_design_platform_v1.9_layout.js', 'solar_pv_design_platform_v1.9_rules.js', 'solar_pv_design_platform_v1.9_electrical.js', 'solar_pv_design_platform_v1.9_energy.js', 'solar_pv_design_platform_v1.9_worker.js'], 'externalBrowserLibraries': ['https://unpkg.com/leaflet@1.9.4/dist/leaflet.js', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js', 'https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js'], 'inlineScriptBytes': 325627, 'rulePackSchema': 'urn:solar-pv-design-platform:rule-pack-schema:2.0.0', 'projectSchema': '2.0', 'databaseFilenamePreserved': True}

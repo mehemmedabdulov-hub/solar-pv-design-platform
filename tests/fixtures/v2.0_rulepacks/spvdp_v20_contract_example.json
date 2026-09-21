@@ -1,0 +1,1020 @@
+{
+  "identity": {
+    "packId": "SPVDP-V20-CONTRACT-EXAMPLE",
+    "engineeringVersion": "1.0.0",
+    "rulePackSchemaVersion": "2.0.0",
+    "name": "v2.0 Alpha 1 native contract example",
+    "description": "Representative native v2.0 rule-pack contract fixture using the frozen v1.9 global preliminary values only. It exists to test schema, units, evidence metadata, capabilities, canonicalization and import/export; it is not a validated jurisdiction pack.",
+    "lifecycleStatus": "draft",
+    "claims": {
+      "softwareImplementation": "partial",
+      "deterministicTests": "defined",
+      "engineeringEvidence": "not-validated",
+      "independentReview": "not-completed",
+      "regulatoryComplianceClaim": "not-permitted"
+    },
+    "provenance": {
+      "sourceReferences": [
+        {
+          "id": "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0",
+          "type": "internal-compatibility-source",
+          "title": "Solar PV Design Platform v1.9 frozen built-in rule pack",
+          "locator": "SPVDP-GLOBAL-PRELIM-2026@1.0.0"
+        }
+      ]
+    }
+  },
+  "compatibility": {
+    "applicationVersions": [
+      "2.0.0-alpha.1"
+    ],
+    "ruleEngineVersions": [
+      "1.9.0"
+    ],
+    "projectSchemaVersions": [
+      "2.0"
+    ],
+    "compatibilityMode": "native-v2",
+    "legacyPackIdentity": null,
+    "deprecatedBy": null,
+    "migrationNotes": "Alpha 1 contract fixture only; detailed electrical activation remains on the frozen v1.9 compatibility engine."
+  },
+  "capabilities": {
+    "design-current": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 preliminary design-current multipliers only."
+    },
+    "current-density-sizing": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 current-density sizing heuristic only; not a standards ampacity table."
+    },
+    "ampacity": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "voltage-drop": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 deterministic preliminary voltage-drop limit checks."
+    },
+    "conductor-sizing": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 conductor material/resistance/correction-factor and standard-size heuristic."
+    },
+    "protective-conductor-sizing": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 simple PE sizing heuristic only; no adiabatic or earthing-system study."
+    },
+    "protection-selection": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 standard-rating and multiplier prompts only; no breaking-capacity or coordination study."
+    },
+    "fault-current": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "breaking-capacity": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "disconnection-time": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "protection-coordination": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "earthing": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "spd-prompt": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 textual SPD prompt only; no SPD coordination capability."
+    },
+    "spd-coordination": {
+      "state": "unsupported",
+      "validationStatus": "not-validated",
+      "scope": "Not implemented or validated in v2.0 Alpha 1; no result may be fabricated from this capability."
+    },
+    "access-fire-constraints": {
+      "state": "implemented-preliminary",
+      "validationStatus": "not-validated",
+      "scope": "v1.9 concept-design setback/access prompts only; no jurisdiction compliance claim."
+    }
+  },
+  "ruleFamilies": [
+    {
+      "id": "ambient-correction",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "rows": [
+          {
+            "maxTemperature": {
+              "value": 25,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 1.03,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 30,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 1,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 35,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.96,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 40,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.91,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 45,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.87,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 50,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.82,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 55,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.76,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 60,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.71,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxTemperature": {
+              "value": 80,
+              "unit": "degC"
+            },
+            "factor": {
+              "value": 0.55,
+              "unit": "ratio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cable-size-table",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "sizes": [
+          {
+            "value": 2.5,
+            "unit": "mm2"
+          },
+          {
+            "value": 4,
+            "unit": "mm2"
+          },
+          {
+            "value": 6,
+            "unit": "mm2"
+          },
+          {
+            "value": 10,
+            "unit": "mm2"
+          },
+          {
+            "value": 16,
+            "unit": "mm2"
+          },
+          {
+            "value": 25,
+            "unit": "mm2"
+          },
+          {
+            "value": 35,
+            "unit": "mm2"
+          },
+          {
+            "value": 50,
+            "unit": "mm2"
+          },
+          {
+            "value": 70,
+            "unit": "mm2"
+          },
+          {
+            "value": 95,
+            "unit": "mm2"
+          },
+          {
+            "value": 120,
+            "unit": "mm2"
+          },
+          {
+            "value": 150,
+            "unit": "mm2"
+          },
+          {
+            "value": 185,
+            "unit": "mm2"
+          },
+          {
+            "value": 240,
+            "unit": "mm2"
+          },
+          {
+            "value": 300,
+            "unit": "mm2"
+          },
+          {
+            "value": 400,
+            "unit": "mm2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "conductor-materials",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "materials": {
+          "copper": {
+            "label": "Copper",
+            "resistivity": {
+              "value": 0.0175,
+              "unit": "ohm_mm2_per_m"
+            },
+            "ampacityFactor": {
+              "value": 1,
+              "unit": "ratio"
+            }
+          },
+          "aluminum": {
+            "label": "Aluminium",
+            "resistivity": {
+              "value": 0.0282,
+              "unit": "ohm_mm2_per_m"
+            },
+            "ampacityFactor": {
+              "value": 0.8,
+              "unit": "ratio"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "conductor-resistance",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "temperatureFactor": {
+          "value": 1.2,
+          "unit": "ratio"
+        }
+      }
+    },
+    {
+      "id": "current-density-heuristic",
+      "capability": "current-density-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "dcBase": {
+          "value": 5,
+          "unit": "A_per_mm2"
+        },
+        "acBase": {
+          "value": 4.5,
+          "unit": "A_per_mm2"
+        }
+      }
+    },
+    {
+      "id": "design-current",
+      "capability": "design-current",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "dcFactor": {
+          "value": 1.25,
+          "unit": "ratio"
+        },
+        "acFactor": {
+          "value": 1.25,
+          "unit": "ratio"
+        }
+      }
+    },
+    {
+      "id": "grouping-correction",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "rows": [
+          {
+            "maxCircuits": {
+              "value": 1,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 1,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 2,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.8,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 3,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.7,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 4,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.65,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 6,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.57,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 9,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.5,
+              "unit": "ratio"
+            }
+          },
+          {
+            "maxCircuits": {
+              "value": 99,
+              "unit": "count"
+            },
+            "factor": {
+              "value": 0.45,
+              "unit": "ratio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "installation-correction",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "factors": {
+          "open_air": {
+            "value": 1,
+            "unit": "ratio"
+          },
+          "tray": {
+            "value": 0.9,
+            "unit": "ratio"
+          },
+          "conduit": {
+            "value": 0.82,
+            "unit": "ratio"
+          },
+          "buried": {
+            "value": 0.78,
+            "unit": "ratio"
+          }
+        }
+      }
+    },
+    {
+      "id": "insulation-correction",
+      "capability": "conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "factors": {
+          "pvc70": {
+            "value": 0.9,
+            "unit": "ratio"
+          },
+          "xlpe90": {
+            "value": 1,
+            "unit": "ratio"
+          }
+        }
+      }
+    },
+    {
+      "id": "protection-prompts",
+      "capability": "protection-selection",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "stringFuseParallelThreshold": {
+          "value": 2,
+          "unit": "count"
+        },
+        "stringFuseDesignMultiplier": {
+          "value": 1,
+          "unit": "ratio"
+        },
+        "acBreakerDesignMultiplier": {
+          "value": 1,
+          "unit": "ratio"
+        },
+        "dcIsolatorDesignMultiplier": {
+          "value": 1,
+          "unit": "ratio"
+        }
+      }
+    },
+    {
+      "id": "protection-rating-table",
+      "capability": "protection-selection",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "ratings": [
+          {
+            "value": 6,
+            "unit": "A"
+          },
+          {
+            "value": 10,
+            "unit": "A"
+          },
+          {
+            "value": 12,
+            "unit": "A"
+          },
+          {
+            "value": 15,
+            "unit": "A"
+          },
+          {
+            "value": 16,
+            "unit": "A"
+          },
+          {
+            "value": 20,
+            "unit": "A"
+          },
+          {
+            "value": 25,
+            "unit": "A"
+          },
+          {
+            "value": 30,
+            "unit": "A"
+          },
+          {
+            "value": 32,
+            "unit": "A"
+          },
+          {
+            "value": 35,
+            "unit": "A"
+          },
+          {
+            "value": 40,
+            "unit": "A"
+          },
+          {
+            "value": 50,
+            "unit": "A"
+          },
+          {
+            "value": 63,
+            "unit": "A"
+          },
+          {
+            "value": 80,
+            "unit": "A"
+          },
+          {
+            "value": 100,
+            "unit": "A"
+          },
+          {
+            "value": 125,
+            "unit": "A"
+          },
+          {
+            "value": 160,
+            "unit": "A"
+          },
+          {
+            "value": 200,
+            "unit": "A"
+          },
+          {
+            "value": 250,
+            "unit": "A"
+          },
+          {
+            "value": 315,
+            "unit": "A"
+          },
+          {
+            "value": 400,
+            "unit": "A"
+          },
+          {
+            "value": 500,
+            "unit": "A"
+          },
+          {
+            "value": 630,
+            "unit": "A"
+          },
+          {
+            "value": 800,
+            "unit": "A"
+          },
+          {
+            "value": 1000,
+            "unit": "A"
+          },
+          {
+            "value": 1250,
+            "unit": "A"
+          },
+          {
+            "value": 1600,
+            "unit": "A"
+          }
+        ]
+      }
+    },
+    {
+      "id": "protective-earth-sizing",
+      "capability": "protective-conductor-sizing",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "rows": [
+          {
+            "phaseMax": {
+              "value": 16,
+              "unit": "mm2"
+            },
+            "mode": "same"
+          },
+          {
+            "phaseMax": {
+              "value": 35,
+              "unit": "mm2"
+            },
+            "mode": "fixed",
+            "fixedSize": {
+              "value": 16,
+              "unit": "mm2"
+            }
+          },
+          {
+            "phaseMax": {
+              "value": 10000,
+              "unit": "mm2"
+            },
+            "mode": "factor",
+            "factor": {
+              "value": 0.5,
+              "unit": "ratio"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "site-access-prompts",
+      "capability": "access-fire-constraints",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "minimumEdgeSetback": {
+          "value": 0.3,
+          "unit": "m"
+        },
+        "minimumObstacleClearance": {
+          "value": 0.3,
+          "unit": "m"
+        },
+        "note": "Concept-design minimum only; jurisdiction/project fire access and maintenance pathways can require larger setbacks."
+      }
+    },
+    {
+      "id": "spd-prompts",
+      "capability": "spd-prompt",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "dcPrompt": "Type 2 DC SPD preliminary; confirm array voltage, lightning exposure and coordination",
+        "acPrompt": "Type 2 AC SPD preliminary; confirm service category, lightning exposure and coordination"
+      }
+    },
+    {
+      "id": "voltage-drop-limits",
+      "capability": "voltage-drop",
+      "applicability": {
+        "scope": "Preliminary concept-design compatibility behavior retained from Solar PV Design Platform v1.9.",
+        "conditions": []
+      },
+      "assumptions": [
+        "No construction-ready standards-compliance claim is made by this compatibility family."
+      ],
+      "implementationStatus": "implemented",
+      "validationStatus": "not-validated",
+      "reviewStatus": "not-reviewed",
+      "evidence": {
+        "sourceReferences": [
+          "v19-pack:SPVDP-GLOBAL-PRELIM-2026:1.0.0"
+        ],
+        "testIds": [
+          "V19-GOLDEN:SPVDP-GLOBAL-PRELIM-2026"
+        ]
+      },
+      "data": {
+        "dcMax": {
+          "value": 2,
+          "unit": "percent"
+        },
+        "acMax": {
+          "value": 2,
+          "unit": "percent"
+        }
+      }
+    }
+  ],
+  "overlay": {
+    "allowedPaths": [
+      "electrical.acBreakerDesignMultiplier",
+      "electrical.acMaxVoltageDropPct",
+      "electrical.ambientCorrection",
+      "electrical.baseCurrentDensityAcAmm2",
+      "electrical.baseCurrentDensityDcAmm2",
+      "electrical.cableSizesMm2",
+      "electrical.conductorMaterials.aluminum.ampacityFactor",
+      "electrical.conductorMaterials.aluminum.resistivityOhmMm2M",
+      "electrical.conductorMaterials.copper.ampacityFactor",
+      "electrical.conductorMaterials.copper.resistivityOhmMm2M",
+      "electrical.conductorResistanceTempFactor",
+      "electrical.dcIsolatorDesignMultiplier",
+      "electrical.dcMaxVoltageDropPct",
+      "electrical.designCurrentFactorAc",
+      "electrical.designCurrentFactorDc",
+      "electrical.groupingCorrection",
+      "electrical.installationMethodFactors.buried",
+      "electrical.installationMethodFactors.conduit",
+      "electrical.installationMethodFactors.open_air",
+      "electrical.installationMethodFactors.tray",
+      "electrical.insulationAmpacityFactors.pvc70",
+      "electrical.insulationAmpacityFactors.xlpe90",
+      "electrical.peRules",
+      "electrical.protectionRatingsA",
+      "electrical.spdAc",
+      "electrical.spdDc",
+      "electrical.stringFuseDesignMultiplier",
+      "electrical.stringFuseParallelThreshold",
+      "site.accessFireNote",
+      "site.minimumEdgeSetbackM",
+      "site.minimumObstacleClearanceM"
+    ],
+    "forbiddenPaths": [
+      "capabilities",
+      "compatibility",
+      "id",
+      "identity",
+      "identity.claims",
+      "identity.engineeringVersion",
+      "identity.lifecycleStatus",
+      "identity.packId",
+      "identity.provenance",
+      "identity.rulePackSchemaVersion",
+      "label",
+      "overlay",
+      "version"
+    ],
+    "unknownKeyBehavior": "reject",
+    "safetyCriticalRestrictions": [
+      "immutable-capability-declarations",
+      "immutable-pack-identity",
+      "immutable-review-provenance",
+      "reject-prototype-pollution-keys",
+      "reject-unknown-engineering-paths"
+    ]
+  },
+  "extensions": {
+    "openai.spvdp:compatibility-note": "This contract artifact adapts frozen v1.9 preliminary behavior; it does not add or validate engineering standards content."
+  }
+}

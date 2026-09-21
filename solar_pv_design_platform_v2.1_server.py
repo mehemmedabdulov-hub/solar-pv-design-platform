@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Solar PV Design Platform v1.7 local development server.
+"""Solar PV Design Platform v2.1 local development server.
 
 Serves the browser application and provides a same-origin SQLite-backed
 project/revision repository API at /api/solar-pv.
@@ -28,7 +28,8 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 
-APP_VERSION = "1.7.0"
+APP_VERSION = "2.1.0"
+PROJECT_SCHEMA_VERSION = "2.0"
 API_PREFIX = "/api/solar-pv"
 DB_SCHEMA_VERSION = 1
 
@@ -979,7 +980,7 @@ class SolarPVRequestHandler(
     SimpleHTTPRequestHandler
 ):
     server_version = (
-        f"SolarPVAlpha5/{APP_VERSION}"
+        f"SolarPVDesignPlatform/{APP_VERSION}"
     )
 
     def __init__(
@@ -1132,30 +1133,33 @@ class SolarPVRequestHandler(
         )
 
         lower = path.lower()
+        path_parts = [
+            part
+            for part in lower.split("/")
+            if part
+        ]
 
-        return (
-            lower.startswith(
-                "/.solar_pv_data/"
-            )
-            or lower
-            == "/.solar_pv_data"
-            or lower.endswith(
-                "_server.py"
-            )
-            or lower.endswith(
-                ".sqlite"
-            )
-            or lower.endswith(
-                ".sqlite3"
-            )
-            or lower.endswith(
-                ".db"
-            )
-            or lower.endswith(
-                ".sqlite3-wal"
-            )
-            or lower.endswith(
-                ".sqlite3-shm"
+        # The static root is normally the repository root. Never expose
+        # dotfiles/directories (for example .git or .env), Python caches,
+        # backend source, shell scripts, or SQLite state through HTTP.
+        if any(
+            part.startswith(".")
+            or part == "__pycache__"
+            for part in path_parts
+        ):
+            return True
+
+        return lower.endswith(
+            (
+                ".py",
+                ".pyc",
+                ".pyo",
+                ".sh",
+                ".sqlite",
+                ".sqlite3",
+                ".db",
+                ".sqlite3-wal",
+                ".sqlite3-shm",
             )
         )
 
@@ -1256,6 +1260,16 @@ class SolarPVRequestHandler(
                             "solar-pv-project-repository",
                         "version":
                             APP_VERSION,
+                        "projectSchema":
+                            PROJECT_SCHEMA_VERSION,
+                        "capabilities": [
+                            "immutable-revisions",
+                            "parent-fingerprint-continuity",
+                            "snapshot-fingerprint-verification",
+                            "v1.9-engineering-rule-provenance",
+                            "v2.0-rule-pack-contract",
+                            "v2.1-calculation-corrections"
+                        ],
                         "database": {
                             "engine":
                                 "sqlite3",
@@ -1602,7 +1616,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
             "Serve Solar PV Design Platform "
-            "v1.7 with SQLite repository API."
+            "v2.1 with SQLite repository API."
         )
     )
 
@@ -1684,7 +1698,7 @@ def main() -> int:
 
     print(
         "Solar PV Design Platform "
-        "v1.7"
+        "v2.1"
     )
 
     print(

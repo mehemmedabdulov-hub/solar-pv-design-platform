@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   b1:
-    if: \${{ github.event.head_commit.message == 'Run v2.3 Beta B1 four-pass gate' }}
+    if: github.event.head_commit.message == 'Run v2.3 Beta B1 four-pass gate'
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
@@ -82,12 +82,7 @@ jobs:
           cleanup(){ kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true; rm -f "$DB_PATH" "$DB_PATH-shm" "$DB_PATH-wal"; }
           trap cleanup EXIT
           for _ in $(seq 1 30); do
-            if python3 - "$PORT" <<'PY' >/dev/null 2>&1
-import sys, urllib.request
-with urllib.request.urlopen(f"http://127.0.0.1:{sys.argv[1]}/api/solar-pv/health", timeout=1) as r:
-    assert r.status == 200
-PY
-            then break; fi
+            if curl -fsS "http://127.0.0.1:$PORT/api/solar-pv/health" >/dev/null; then break; fi
             sleep 1
           done
           set -o pipefail

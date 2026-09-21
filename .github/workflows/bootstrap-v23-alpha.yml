@@ -24,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           base64 -d .beta-ready-bootstrap/alpha_source.b64 > /tmp/alpha_source.zip
-          echo "4ddeee50759876eb68993dee735fa8f2e3e5aae9cb721a2034f971b319dbb34d  /tmp/alpha_source.zip" | sha256sum -c -
+          echo "07d91ee504e59465efe0777704bff1002a93cff6ec44142d20cfbb456d5ce9e5  /tmp/alpha_source.zip" | sha256sum -c -
           rm -rf /tmp/alpha_release
           mkdir -p /tmp/alpha_release
           unzip -q /tmp/alpha_source.zip -d /tmp/alpha_release

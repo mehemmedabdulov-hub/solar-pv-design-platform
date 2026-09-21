@@ -33,8 +33,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          cp .github/workflows/bootstrap-v23-alpha.yml /tmp/bootstrap-v23-alpha.yml
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -a /tmp/alpha_release/. .
+          # The Actions token cannot create/update workflow files. Preserve this
+          # already-authorized bootstrap workflow unchanged, and publish the
+          # permanent release-gate workflow separately after the source promotion.
+          rm -f .github/workflows/v23-alpha-release-gate.yml
+          mkdir -p .github/workflows
+          cp /tmp/bootstrap-v23-alpha.yml .github/workflows/bootstrap-v23-alpha.yml
 
       - uses: actions/setup-python@v5
         with:

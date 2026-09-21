@@ -1,0 +1,65 @@
+name: Bootstrap v2.3 Alpha Beta-Ready Baseline
+
+on:
+  push:
+    branches:
+      - release/v2.3-alpha-beta-ready
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap-and-verify:
+    if: ${{ github.event.head_commit.message == 'Bootstrap v2.3 Alpha release runner' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/v2.3-alpha-beta-ready
+          fetch-depth: 0
+
+      - name: Decode supplied verified Alpha source
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .beta-ready-bootstrap/alpha_source.b64 > /tmp/alpha_source.zip
+          echo "4ddeee50759876eb68993dee735fa8f2e3e5aae9cb721a2034f971b319dbb34d  /tmp/alpha_source.zip" | sha256sum -c -
+          rm -rf /tmp/alpha_release
+          mkdir -p /tmp/alpha_release
+          unzip -q /tmp/alpha_source.zip -d /tmp/alpha_release
+
+      - name: Replace stale repository tree with v2.3 Alpha source
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a /tmp/alpha_release/. .
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install release-gate dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Run complete Alpha release gate including real browser
+        shell: bash
+        run: bash tests/run_v23_alpha_release_verification.sh
+
+      - name: Publish verified v2.3 Alpha baseline to branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Promote verified v2.3 Alpha as Beta-ready baseline"
+          git push origin HEAD:release/v2.3-alpha-beta-ready

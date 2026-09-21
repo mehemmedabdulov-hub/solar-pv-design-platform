@@ -24,7 +24,7 @@ jobs:
         run: |
           set -euo pipefail
           base64 -d .beta-bootstrap/b1_payload.b64 > /tmp/b1_payload.zip
-          echo "f68bfe878f0f6b0a9d85dc0f190d481309131192f00d43d51416b3cc31090d6f  /tmp/b1_payload.zip" | sha256sum -c -
+          echo "782fec8a5859eb500a4aba28adef3197693ba0257a07939b95a31cab0fb37d4e  /tmp/b1_payload.zip" | sha256sum -c -
           rm -rf /tmp/b1
           mkdir -p /tmp/b1
           unzip -q /tmp/b1_payload.zip -d /tmp/b1

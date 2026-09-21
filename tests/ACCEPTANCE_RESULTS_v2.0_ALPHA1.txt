@@ -1,0 +1,157 @@
+Solar PV Design Platform v2.0 Alpha 1 - automated acceptance results
+Date: 2026-08-29
+Baseline: frozen v1.9 Final dated 2026-08-28
+
+ALPHA 1 SCOPE
+Formal rule-pack contract, validation, canonicalization, safe import/export,
+overlay constraints, capability boundaries, v1.9 golden compatibility,
+project-rule migration provenance and deliverable provenance. No new standards
+formulas/tables were added.
+
+PRE-EDIT BASELINE
+See tests/BASELINE_RESULTS_BEFORE_V2_EDITS.txt.
+- Source-only ZIP SHA-256: PASS
+  1943e223b6e2cfd9b7f65248e4c2242598178702dac26e667ec8d0e1405c49ce
+- ZIP compressed-data integrity: PASS
+- Frozen v1.9 source manifest before editing: PASS
+- python3 tests/test_v19_static.py: PASS on untouched baseline
+- node tests/test_v19_rulepacks.js: PASS on untouched baseline
+- python3 tests/test_v19_server.py: PASS on untouched baseline
+
+FINAL ACCEPTANCE SUITE
+
+1) python3 tests/test_v19_static.py
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'mode': 'v1.9-frozen-modules-hosted-by-v2.0-alpha1', 'sections': 17, 'retainedV19Modules': 7, 'legacyDatabaseFilenamePreserved': True}
+
+2) node tests/test_v19_rulepacks.js
+RESULT: PASS
+SUMMARY:
+- rulePacks: 4
+- baseFingerprint: rule-7cf5c696
+- overlayFingerprint: rule-af1c024b
+- baseDcDensity: 3.276
+- hotGroupedDcDensity: 1.7761199999999997
+- dcCopperSizeMm2: 10
+- dcAluminumSizeMm2: 10
+- acCableSizeMm2: 35
+
+3) python3 tests/test_v19_server.py
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'healthVersion': '1.9.0', 'projectSchema': '1.9', 'revisions': 2, 'conflictEnforced': True, 'dbFileCreated': True}
+
+4) python3 tests/test_v20_static.py
+RESULT: PASS
+SUMMARY:
+- 17 UI sections retained.
+- v2 core -> v1.9 repository -> geometry -> layout -> v1.9 rules -> v2 rule contract -> v1.9 electrical -> v1.9 energy load order verified.
+- all local JS syntax and v2 Python server compile pass.
+- rule-pack JSON Schema Draft 2020-12 is valid.
+- representative native v2 fixture accepted; negative schema cases rejected.
+- project schema 2.0, v1.9 storage migration keys, Worker path and legacy SQLite filename verified.
+- migration/deliverable provenance integration tokens verified.
+
+5) python3 tests/test_v20_frozen_v19_hashes.py
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'frozenV19FilesVerified': 14, 'v19RuleEngineSha256': '7ecbfbe898b1445aab937d75c24930293e4bd8c3814243532c2fe3acc5e23957', 'v19ElectricalSha256': '841b423b625271c345e97e925e66bc069347319d75db4f5b51452057c68739fa', 'v19ServerSha256': 'ec5831476615fe2fb81bb5e71355b25f0325bcfe7ee3cb57227195a7860e6c79'}
+This proves the frozen calculation/repository/runtime files are byte-identical to the committed v1.9 manifest.
+
+6) node tests/test_v20_rulepacks.js
+RESULT: PASS
+SUMMARY:
+- formal rule-pack schema version: 2.0.0
+- 4 v1.9 compatibility packs accepted
+- 4 committed golden fixtures matched exactly through both the frozen v1.9 engine and the v2 compatibility adapter
+- native v2 fixture fingerprint:
+  rulepack-v2-sha256-04d39129bdbf912b9b7970e01d3c03861e13f949a54e0669b1c057355ecbd260
+- native canonical bytes: 18085
+- v1.9 frozen base fingerprints:
+  SPVDP-CONSERVATIVE-PRELIM-2026 -> rule-3076459a
+  SPVDP-GLOBAL-PRELIM-2026 -> rule-7cf5c696
+  SPVDP-HOT-CLIMATE-PRELIM-2026 -> rule-aaf831c0
+  SPVDP-LEGACY-V17 -> rule-953c401d
+- malformed metadata/schema/versions/units/types/numbers/tables/evidence rejected
+- unknown engineering/capability keys rejected
+- overlay allow-list/immutable fields/prototype pollution rejected
+- numeric-string overlay coercion rejected
+- canonicalization and SHA-256 fingerprints deterministic
+- export/import/canonicalize round trip deterministic
+- duplicate pack identity rejected
+- unsupported deeper capabilities explicitly return unsupported/not-validated
+- v1.7/v1.8/v1.9 engineering-rule migrations preserve compatibility fingerprint
+
+7) node tests/test_v20_project_migration.js
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'source': 'index.html:migrateProjectSnapshot', 'supportedLegacySchemasTested': ['1.7-alpha6', '1.8', '1.8-final', '1.8-rulepacks', '1.9'], 'projectSchema': '2.0', 'rulePackSchema': '2.0.0', 'ruleBasisDriftRejected': True, 'unknownSchemaRejected': True}
+The migration function is extracted verbatim from index.html; browser-only DOM/geometry services are stubbed while the actual engineering-rule migration contract executes.
+
+8) node tests/test_v20_deliverable_provenance.js
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'source': 'index.html deliverable functions', 'sldProvenance': True, 'bomProvenance': True, 'reportProvenanceSource': True, 'legacyRuleFingerprintPreserved': 'rule-7cf5c696', 'formalRuleSchema': '2.0.0', 'complianceClaim': 'not-permitted'}
+The test executes the actual SLD/BOM provenance functions extracted from index.html with a deterministic object model and verifies the engineering-report provenance/claim-boundary source.
+
+9) python3 tests/test_v20_server.py
+RESULT: PASS
+SUMMARY:
+{'ok': True, 'healthVersion': '2.0.0-alpha.1', 'projectSchema': '2.0', 'dbSchema': 1, 'revisions': 2, 'conflictEnforced': True, 'fingerprintVerification': True, 'dbFileCreated': True, 'legacyDatabaseFilenamePreserved': True}
+Static serving, immutable create/idempotency/conflict/revision-2/current/history/restore and tampered-fingerprint rejection pass. DB schema remains 1.
+
+BROWSER / UI UAT
+FULL UI UAT: NOT PERFORMED / NOT CLAIMED.
+Environment evidence:
+- Chromium: 144.0.7559.96 headless.
+- v2 server health endpoint was reachable from the container.
+- Chromium navigation to http://127.0.0.1:8000/ failed before page request with:
+  net::ERR_BLOCKED_BY_ADMINISTRATOR
+- A file:// navigation probe was also blocked by the same administrator policy.
+
+A real-Chromium JavaScript-runtime smoke was still executed by loading the frozen
+v1.9 rule module and v2 contract module directly into an about:blank DevTools
+runtime. RESULT: PASS.
+Observed:
+- exact golden global v1.9 compatibility fingerprint: rule-7cf5c696
+- global formal contract fingerprint:
+  rulepack-v2-sha256-384ab320c7a9283d8d323620546ff9f70b11c5d360ba30410a6bf5eb19ee080c
+- export/import round trip: PASS
+- numeric-string overlay rejection: PASS
+- fault-current capability: unsupported / not-validated
+This browser-runtime smoke is not presented as rooftop/ground/carport/workflow UAT.
+
+DEVELOPMENT TEST-HARNESS CORRECTIONS (NOT RELEASE-GATE PRODUCT FAILURES)
+- An early quick compatibility sanity assertion reused the recorded v1.9 overlay fingerprint for a different partial configuration and failed. Direct comparison then confirmed frozen v1.9 and v2 adapter both produced the same fingerprint for that actual configuration; the incorrect expectation was discarded.
+- The first draft of tests/test_v20_server.py expected HTTP 422 for an intentionally tampered snapshot fingerprint. The retained server contract correctly returned HTTP 400; the test expectation was corrected to existing behavior and then passed.
+- While adding strict overlay negative cases, an initial assertion expected error code INVALID_TABLE while the validator deterministically returns MALFORMED_TABLE for non-monotonic tables. The test was corrected to the defined structured error code and passed.
+- While strengthening static provenance checks, an initial assertion looked for the literal legacy-v1.9-frozen in index.html even though that policy is implemented in the external v2 rule-contract module. The misplaced source assertion was removed; the contract/migration tests cover the policy directly and pass.
+
+ALPHA 1 EXIT GATE
+PASS:
+- malformed packs rejected deterministically
+- valid v1.9 and representative native v2 fixtures accepted deterministically
+- schema/version/units/unknown-key behavior tested
+- overlay constraints and prototype-pollution defenses tested
+- canonicalization and fingerprints deterministic
+- safe deterministic export/import round trip passes
+- all four v1.9 built-ins frozen as golden compatibility fixtures
+- v1.9 compatibility calculation results/fingerprints show no drift
+- syntax/static tests pass
+- server/repository behavior passes; DB schema/name continuity retained
+- claimed v1.7/v1.8/v1.9 project-rule migration scope passes with rule-basis drift rejection
+- SLD/BOM/report provenance regression checks pass
+
+SOURCE MANIFEST / PACKAGE
+The final SOURCE_MANIFEST_SHA256.txt is generated after this acceptance file is written and is verified with `sha256sum -c SOURCE_MANIFEST_SHA256.txt` before packaging. Package ZIP integrity and final package SHA-256 are reported in the engineering handoff.
+
+ENGINEERING CLAIM STATUS
+- Software implementation: Alpha 1 rule-contract infrastructure implemented.
+- Deterministic software tests: PASS for the acceptance scope above.
+- Engineering evidence validation: NOT COMPLETE for inherited preliminary rule values.
+- Independent engineering review: NOT COMPLETED in this coding session.
+- Regulatory/construction-ready compliance claim: NOT PERMITTED.
+- New standards/jurisdiction data: NOT ADDED.
+
+No test, no claim.

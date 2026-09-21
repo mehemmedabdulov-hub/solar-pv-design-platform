@@ -1,7 +1,8 @@
 "use strict";
 
-/* Solar PV Design Platform v1.7 - electrical engine
-   Extracted from the current Alpha5 deterministic engine without calculation rewrites. */
+/* Solar PV Design Platform v2.1 - corrected electrical engine
+   Calculation fixes: hot-condition DC voltage-drop basis, identical-length parallel MPPT grouping,
+   and internally consistent AC feeder loss percentage basis. */
 
 function getElectricalDesignInputs() {
   return {
@@ -62,7 +63,13 @@ function chooseStringPartition(panelCount, strictMin, strictMax, preferredMin, p
         }, 0)
       : 0;
 
-    const mpptsNeeded = Math.ceil(stringCount / parallelCapacity);
+    // Parallel strings on one MPPT must have the same series-module count.
+    // Counting only total strings can incorrectly put N- and (N-1)-module strings
+    // in parallel on one tracker when a balanced partition contains two lengths.
+    const lengthCounts = new Map();
+    lengths.forEach(length => lengthCounts.set(length, (lengthCounts.get(length) || 0) + 1));
+    const mpptsNeeded = [...lengthCounts.values()]
+      .reduce((sum, count) => sum + Math.ceil(count / parallelCapacity), 0);
     const preferredTarget = hasPreferredWindow ? preferredMax : strictMax;
     const targetDeviation = lengths.reduce((sum, length) => sum + Math.abs(preferredTarget - length), 0);
     const score = [preferredPenalty, mpptsNeeded, stringCount, targetDeviation];
@@ -246,19 +253,23 @@ function calculateElectricalDesign() {
     };
   }
 
-  // Keep different orientation/azimuth groups on separate MPPTs.
+  // Keep different orientation/azimuth groups on separate MPPTs, and never
+  // parallel strings with different series-module counts on the same tracker.
   const mpptAssignments = [];
-  const stringsByGroup = new Map();
+  const stringsByCompatibleMpptGroup = new Map();
   strings.forEach(string => {
-    if (!stringsByGroup.has(string.groupKey)) stringsByGroup.set(string.groupKey, []);
-    stringsByGroup.get(string.groupKey).push(string);
+    const compatibleKey = `${string.groupKey}|modules:${string.moduleCount}`;
+    if (!stringsByCompatibleMpptGroup.has(compatibleKey)) stringsByCompatibleMpptGroup.set(compatibleKey, []);
+    stringsByCompatibleMpptGroup.get(compatibleKey).push(string);
   });
 
-  for (const [groupKey, groupStrings] of stringsByGroup.entries()) {
+  for (const [compatibleKey, groupStrings] of stringsByCompatibleMpptGroup.entries()) {
     for (let i = 0; i < groupStrings.length; i += parallelCapacity) {
       const assignedStrings = groupStrings.slice(i, i + parallelCapacity);
       mpptAssignments.push({
-        groupKey,
+        groupKey: groupStrings[0].groupKey,
+        compatibleKey,
+        moduleCount: groupStrings[0].moduleCount,
         strings: assignedStrings,
         powerKW: assignedStrings.reduce((sum, item) => sum + item.powerKW, 0),
         operatingCurrentA: assignedStrings.length * module.impA,
@@ -421,13 +432,8 @@ function nextStandardValue(values, required) {
   return values.find(value => value + 1e-9 >= required) ?? null;
 }
 
-function getDetailedElectricalInputs() {
-  return {
-    dcStringOneWayLengthM: Number(document.getElementById("dcStringOneWayLengthM")?.value),
-    dcHomerunOneWayLengthM: Number(document.getElementById("dcHomerunOneWayLengthM")?.value),
-    acFeederOneWayLengthM: Number(document.getElementById("acFeederOneWayLengthM")?.value),
-    acSystemVoltageV: Number(document.getElementById("acSystemVoltageV")?.value),
-    acPowerFactor: Number(document.getElementById("acPowerFactor")?.value),
+function getDetailedElectricalInputs(options = {}) {
+  const legacyInputs = {
     designCurrentFactor: Number(document.getElementById("designCurrentFactor")?.value),
     conductorTempFactor: Number(document.getElementById("conductorTempFactor")?.value),
     dcMaxVoltageDropPct: Number(document.getElementById("dcMaxVoltageDropPct")?.value),
@@ -435,49 +441,85 @@ function getDetailedElectricalInputs() {
     dcCurrentDensityAmm2: Number(document.getElementById("dcCurrentDensityAmm2")?.value),
     acCurrentDensityAmm2: Number(document.getElementById("acCurrentDensityAmm2")?.value)
   };
+  let ruleContext = options.ruleContextOverride || null;
+  try {
+    if (!ruleContext && typeof globalThis.getActiveEngineeringRuleContext === "function") {
+      ruleContext = globalThis.getActiveEngineeringRuleContext({ legacyInputs });
+    } else if (!ruleContext && globalThis.SolarPVRulePacks?.buildRuleContext) {
+      ruleContext = globalThis.SolarPVRulePacks.buildRuleContext({
+        packId: globalThis.SolarPVRulePacks.LEGACY_RULE_PACK_ID,
+        legacyInputs
+      });
+    }
+  } catch (error) {
+    ruleContext = { valid: false, errors: [error?.message || String(error)], warnings: [] };
+  }
+  return {
+    dcStringOneWayLengthM: Number(document.getElementById("dcStringOneWayLengthM")?.value),
+    dcHomerunOneWayLengthM: Number(document.getElementById("dcHomerunOneWayLengthM")?.value),
+    acFeederOneWayLengthM: Number(document.getElementById("acFeederOneWayLengthM")?.value),
+    acSystemVoltageV: Number(document.getElementById("acSystemVoltageV")?.value),
+    acPowerFactor: Number(document.getElementById("acPowerFactor")?.value),
+    designCurrentFactor: legacyInputs.designCurrentFactor,
+    designCurrentFactorDc: Number(ruleContext?.dcDesignCurrentFactor ?? legacyInputs.designCurrentFactor),
+    designCurrentFactorAc: Number(ruleContext?.acDesignCurrentFactor ?? legacyInputs.designCurrentFactor),
+    conductorTempFactor: Number(ruleContext?.conductorTempFactor ?? legacyInputs.conductorTempFactor),
+    dcMaxVoltageDropPct: Number(ruleContext?.dcMaxVoltageDropPct ?? legacyInputs.dcMaxVoltageDropPct),
+    acMaxVoltageDropPct: Number(ruleContext?.acMaxVoltageDropPct ?? legacyInputs.acMaxVoltageDropPct),
+    dcCurrentDensityAmm2: Number(ruleContext?.dcCurrentDensityAmm2 ?? legacyInputs.dcCurrentDensityAmm2),
+    acCurrentDensityAmm2: Number(ruleContext?.acCurrentDensityAmm2 ?? legacyInputs.acCurrentDensityAmm2),
+    conductorResistivityOhmMm2M: Number(ruleContext?.resistivityOhmMm2M ?? COPPER_RESISTIVITY_OHM_MM2_M),
+    conductorMaterial: String(ruleContext?.conductorMaterialLabel || "Copper"),
+    standardCableSizesMm2: ruleContext?.cableSizesMm2 || STANDARD_CABLE_SIZES_MM2,
+    ruleContext,
+    legacyInputs
+  };
 }
 
-function conductorResistanceOhm(lengthM, sizeMm2, tempFactor = 1) {
-  return COPPER_RESISTIVITY_OHM_MM2_M * Math.max(0, lengthM) * Math.max(1, tempFactor) / Math.max(sizeMm2, 1e-9);
+function conductorResistanceOhm(lengthM, sizeMm2, tempFactor = 1, resistivityOhmMm2M = COPPER_RESISTIVITY_OHM_MM2_M) {
+  return Math.max(1e-9, Number(resistivityOhmMm2M) || COPPER_RESISTIVITY_OHM_MM2_M) * Math.max(0, lengthM) * Math.max(1, tempFactor) / Math.max(sizeMm2, 1e-9);
 }
 
-function chooseDcCableSize({ operatingCurrentA, designCurrentA, protectionA = null, oneWayLengthM, operatingVoltageV, maxDropPct, currentDensity, tempFactor }) {
+function chooseDcCableSize({ operatingCurrentA, designCurrentA, protectionA = null, oneWayLengthM, operatingVoltageV, maxDropPct, currentDensity, tempFactor, resistivityOhmMm2M = COPPER_RESISTIVITY_OHM_MM2_M, standardCableSizesMm2 = STANDARD_CABLE_SIZES_MM2 }) {
   const currentBasis = Math.max(designCurrentA, protectionA || 0);
   const sizeByCurrent = currentBasis / Math.max(currentDensity, 1e-9);
   const allowedDropV = Math.max(operatingVoltageV * maxDropPct / 100, 1e-9);
-  const sizeByDrop = 2 * Math.max(0, oneWayLengthM) * operatingCurrentA * COPPER_RESISTIVITY_OHM_MM2_M * tempFactor / allowedDropV;
+  const sizeByDrop = 2 * Math.max(0, oneWayLengthM) * operatingCurrentA * resistivityOhmMm2M * tempFactor / allowedDropV;
   const requiredSize = Math.max(2.5, sizeByCurrent, sizeByDrop);
-  const sizeMm2 = nextStandardValue(STANDARD_CABLE_SIZES_MM2, requiredSize);
+  const sizeMm2 = nextStandardValue(standardCableSizesMm2, requiredSize);
   if (!sizeMm2) return { sizeMm2: null, requiredSize, sizeByCurrent, sizeByDrop, dropV: Infinity, dropPct: Infinity, capacityA: 0, lossW: Infinity };
-  const loopR = conductorResistanceOhm(2 * oneWayLengthM, sizeMm2, tempFactor);
+  const loopR = conductorResistanceOhm(2 * oneWayLengthM, sizeMm2, tempFactor, resistivityOhmMm2M);
   const dropV = operatingCurrentA * loopR;
   const dropPct = operatingVoltageV > 0 ? dropV / operatingVoltageV * 100 : Infinity;
   const lossW = operatingCurrentA * operatingCurrentA * loopR;
   return { sizeMm2, requiredSize, sizeByCurrent, sizeByDrop, dropV, dropPct, capacityA: sizeMm2 * currentDensity, lossW };
 }
 
-function chooseAcCableSize({ operatingCurrentA, designCurrentA, breakerA, oneWayLengthM, lineVoltageV, maxDropPct, currentDensity, tempFactor }) {
+function chooseAcCableSize({ operatingCurrentA, designCurrentA, breakerA, oneWayLengthM, lineVoltageV, maxDropPct, currentDensity, tempFactor, resistivityOhmMm2M = COPPER_RESISTIVITY_OHM_MM2_M, standardCableSizesMm2 = STANDARD_CABLE_SIZES_MM2 }) {
   const currentBasis = Math.max(designCurrentA, breakerA || 0);
   const sizeByCurrent = currentBasis / Math.max(currentDensity, 1e-9);
   const allowedDropV = Math.max(lineVoltageV * maxDropPct / 100, 1e-9);
-  const sizeByDrop = Math.sqrt(3) * Math.max(0, oneWayLengthM) * operatingCurrentA * COPPER_RESISTIVITY_OHM_MM2_M * tempFactor / allowedDropV;
+  const sizeByDrop = Math.sqrt(3) * Math.max(0, oneWayLengthM) * operatingCurrentA * resistivityOhmMm2M * tempFactor / allowedDropV;
   const requiredSize = Math.max(2.5, sizeByCurrent, sizeByDrop);
-  const sizeMm2 = nextStandardValue(STANDARD_CABLE_SIZES_MM2, requiredSize);
+  const sizeMm2 = nextStandardValue(standardCableSizesMm2, requiredSize);
   if (!sizeMm2) return { sizeMm2: null, requiredSize, sizeByCurrent, sizeByDrop, dropV: Infinity, dropPct: Infinity, capacityA: 0, lossW: Infinity };
-  const phaseR = conductorResistanceOhm(oneWayLengthM, sizeMm2, tempFactor);
+  const phaseR = conductorResistanceOhm(oneWayLengthM, sizeMm2, tempFactor, resistivityOhmMm2M);
   const dropV = Math.sqrt(3) * operatingCurrentA * phaseR;
   const dropPct = lineVoltageV > 0 ? dropV / lineVoltageV * 100 : Infinity;
   const lossW = 3 * operatingCurrentA * operatingCurrentA * phaseR;
   return { sizeMm2, requiredSize, sizeByCurrent, sizeByDrop, dropV, dropPct, capacityA: sizeMm2 * currentDensity, lossW };
 }
 
-function suggestedProtectiveEarthSizeMm2(phaseSizeMm2) {
+function suggestedProtectiveEarthSizeMm2(phaseSizeMm2, ruleContext = null) {
   if (!Number.isFinite(phaseSizeMm2) || phaseSizeMm2 <= 0) return null;
+  if (ruleContext?.peRules && globalThis.SolarPVRulePacks?.suggestProtectiveEarthSize) {
+    return globalThis.SolarPVRulePacks.suggestProtectiveEarthSize(phaseSizeMm2, ruleContext.peRules, ruleContext.cableSizesMm2 || STANDARD_CABLE_SIZES_MM2);
+  }
   const raw = phaseSizeMm2 <= 16 ? phaseSizeMm2 : phaseSizeMm2 <= 35 ? 16 : phaseSizeMm2 / 2;
   return nextStandardValue(STANDARD_CABLE_SIZES_MM2, raw);
 }
 
-function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResult) {
+function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResult, options = {}) {
   if (!layoutIsCurrent || !placedPanels.length) {
     return { status: "neutral", label: "Waiting for layout", message: "Generate a physical layout and string/MPPT design first." };
   }
@@ -485,13 +527,18 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
   if (!electrical || electrical.status === "fail" || !electrical.strings?.length || !electrical.inverterInstances?.length) {
     return { status: "neutral", label: "Waiting for valid string design", message: "A valid string/MPPT assignment is required before detailed electrical calculations can run." };
   }
-  const inputs = getDetailedElectricalInputs();
+  const inputs = getDetailedElectricalInputs(options);
   const errors = [];
   const warnings = [];
-  const numericInputs = Object.values(inputs);
-  if (!numericInputs.every(Number.isFinite) || inputs.dcStringOneWayLengthM < 0 || inputs.dcHomerunOneWayLengthM < 0 || inputs.acFeederOneWayLengthM < 0 || inputs.acSystemVoltageV <= 0 || inputs.acPowerFactor <= 0 || inputs.acPowerFactor > 1 || inputs.designCurrentFactor < 1 || inputs.conductorTempFactor < 1 || inputs.dcMaxVoltageDropPct <= 0 || inputs.acMaxVoltageDropPct <= 0 || inputs.dcCurrentDensityAmm2 <= 0 || inputs.acCurrentDensityAmm2 <= 0) {
-    return { status: "fail", label: "Input error", message: "Enter valid detailed-electrical design inputs.", errors: ["Invalid detailed-electrical input."], warnings };
+  const numericInputs = [inputs.dcStringOneWayLengthM, inputs.dcHomerunOneWayLengthM, inputs.acFeederOneWayLengthM, inputs.acSystemVoltageV, inputs.acPowerFactor, inputs.designCurrentFactorDc, inputs.designCurrentFactorAc, inputs.conductorTempFactor, inputs.dcMaxVoltageDropPct, inputs.acMaxVoltageDropPct, inputs.dcCurrentDensityAmm2, inputs.acCurrentDensityAmm2, inputs.conductorResistivityOhmMm2M];
+  if (!numericInputs.every(Number.isFinite) || inputs.dcStringOneWayLengthM < 0 || inputs.dcHomerunOneWayLengthM < 0 || inputs.acFeederOneWayLengthM < 0 || inputs.acSystemVoltageV <= 0 || inputs.acPowerFactor <= 0 || inputs.acPowerFactor > 1 || inputs.designCurrentFactorDc < 1 || inputs.designCurrentFactorAc < 1 || inputs.conductorTempFactor < 1 || inputs.dcMaxVoltageDropPct <= 0 || inputs.acMaxVoltageDropPct <= 0 || inputs.dcCurrentDensityAmm2 <= 0 || inputs.acCurrentDensityAmm2 <= 0 || inputs.conductorResistivityOhmMm2M <= 0) {
+    return { status: "fail", label: "Input error", message: "Enter valid detailed-electrical design inputs and rule-pack settings.", errors: ["Invalid detailed-electrical or rule-pack input."], warnings, ruleContext: inputs.ruleContext };
   }
+  if (inputs.ruleContext && !inputs.ruleContext.valid) {
+    return { status: "fail", label: "Rule-pack error", message: inputs.ruleContext.errors.join(" ") || "The active engineering rule pack is invalid.", errors: [...inputs.ruleContext.errors], warnings: [...(inputs.ruleContext.warnings || [])], ruleContext: inputs.ruleContext };
+  }
+  if (inputs.ruleContext?.warnings?.length) warnings.push(...inputs.ruleContext.warnings);
+  const protectionRatings = inputs.ruleContext?.protectionRatingsA?.length ? inputs.ruleContext.protectionRatingsA : STANDARD_PROTECTION_RATINGS_A;
 
   const module = electrical.module || getSelectedModule();
   const inverter = electrical.inverter || getSelectedInverter();
@@ -506,11 +553,13 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
 
   electrical.strings.forEach(string => {
     const parallelStrings = mpptStringCount.get(`${string.inverterNumber}:${string.mpptNumber}`) || 1;
-    const designCurrentA = module.iscA * inputs.designCurrentFactor;
+    const designCurrentA = module.iscA * inputs.designCurrentFactorDc;
     let fuseA = null;
-    let protectionText = "Direct inverter input; string fuse not required by this prototype rule";
-    if (parallelStrings > 1) {
-      fuseA = nextStandardValue(STANDARD_PROTECTION_RATINGS_A, designCurrentA);
+    let protectionText = "Direct inverter input; string fuse not required by the active preliminary rule pack";
+    const fuseThreshold = Math.max(2, Number(inputs.ruleContext?.stringFuseParallelThreshold || 2));
+    if (parallelStrings >= fuseThreshold) {
+      const fuseBasisA = designCurrentA * Number(inputs.ruleContext?.stringFuseDesignMultiplier || 1);
+      fuseA = nextStandardValue(protectionRatings, fuseBasisA);
       if (!fuseA) errors.push(`${string.id}: no standard string-fuse size can satisfy ${designCurrentA.toFixed(1)} A design current.`);
       if (fuseA && fuseA > module.maxSeriesFuseA + 1e-9) errors.push(`${string.id}: required ${fuseA} A string fuse exceeds module maximum series fuse ${module.maxSeriesFuseA} A.`);
       protectionText = fuseA ? `${fuseA} A gPV-class preliminary string fuse` : "No valid fuse size";
@@ -520,10 +569,12 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
       designCurrentA,
       protectionA: fuseA,
       oneWayLengthM: inputs.dcStringOneWayLengthM,
-      operatingVoltageV: Math.max(string.vmpStcV, 1),
+      operatingVoltageV: Math.max(string.vmpHotV, 1),
       maxDropPct: inputs.dcMaxVoltageDropPct,
       currentDensity: inputs.dcCurrentDensityAmm2,
-      tempFactor: inputs.conductorTempFactor
+      tempFactor: inputs.conductorTempFactor,
+      resistivityOhmMm2M: inputs.conductorResistivityOhmMm2M,
+      standardCableSizesMm2: inputs.standardCableSizesMm2
     });
     if (!cable.sizeMm2) errors.push(`${string.id}: required DC cable section exceeds the available standard-size table.`);
     if (cable.dropPct > inputs.dcMaxVoltageDropPct + 1e-6) errors.push(`${string.id}: DC voltage drop ${cable.dropPct.toFixed(2)}% exceeds ${inputs.dcMaxVoltageDropPct.toFixed(2)}%.`);
@@ -535,7 +586,7 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
       designCurrentA,
       oneWayLengthM: inputs.dcStringOneWayLengthM,
       cableSizeMm2: cable.sizeMm2,
-      voltageV: string.vmpStcV,
+      voltageV: string.vmpHotV,
       dropPct: cable.dropPct,
       protection: protectionText,
       capacityA: cable.capacityA,
@@ -554,9 +605,9 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
   for (const [key, strings] of mpptGroups.entries()) {
     if (strings.length <= 1 || inputs.dcHomerunOneWayLengthM <= 0) continue;
     const operatingCurrentA = strings.length * module.impA;
-    const designCurrentA = strings.length * module.iscA * inputs.designCurrentFactor;
-    const isolatorA = nextStandardValue(STANDARD_PROTECTION_RATINGS_A, designCurrentA);
-    const operatingVoltageV = Math.min(...strings.map(string => string.vmpStcV));
+    const designCurrentA = strings.length * module.iscA * inputs.designCurrentFactorDc;
+    const isolatorA = nextStandardValue(protectionRatings, designCurrentA * Number(inputs.ruleContext?.dcIsolatorDesignMultiplier || 1));
+    const operatingVoltageV = Math.min(...strings.map(string => string.vmpHotV));
     const cable = chooseDcCableSize({
       operatingCurrentA,
       designCurrentA,
@@ -565,7 +616,9 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
       operatingVoltageV,
       maxDropPct: inputs.dcMaxVoltageDropPct,
       currentDensity: inputs.dcCurrentDensityAmm2,
-      tempFactor: inputs.conductorTempFactor
+      tempFactor: inputs.conductorTempFactor,
+      resistivityOhmMm2M: inputs.conductorResistivityOhmMm2M,
+      standardCableSizesMm2: inputs.standardCableSizesMm2
     });
     if (!cable.sizeMm2 || !isolatorA) errors.push(`MPPT ${key}: no valid preliminary homerun cable/isolator size.`);
     if (cable.dropPct > inputs.dcMaxVoltageDropPct + 1e-6) errors.push(`MPPT ${key}: DC homerun voltage drop ${cable.dropPct.toFixed(2)}% exceeds the configured limit.`);
@@ -574,7 +627,7 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
     rows.push({
       circuit: `MPPT ${key} homerun`, qty: 1, designCurrentA, oneWayLengthM: inputs.dcHomerunOneWayLengthM,
       cableSizeMm2: cable.sizeMm2, voltageV: operatingVoltageV, dropPct: cable.dropPct,
-      protection: isolatorA ? `${isolatorA} A DC isolator / combiner output; Type 2 DC SPD preliminary` : "No valid isolator size",
+      protection: isolatorA ? `${isolatorA} A DC isolator / combiner output; ${inputs.ruleContext?.spdDc || "Type 2 DC SPD preliminary"}` : "No valid isolator size",
       capacityA: cable.capacityA,
       status: cable.sizeMm2 && isolatorA && cable.dropPct <= inputs.dcMaxVoltageDropPct + 1e-6 && cable.capacityA + 1e-9 >= isolatorA ? "pass" : "fail",
       category: "dc-homerun"
@@ -584,11 +637,13 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
   let largestBreakerA = 0;
   let maxAcCableSize = 0;
   let suggestedPeSize = 0;
+  let totalAcSizingPowerKW = 0;
   electrical.inverterInstances.forEach(instance => {
     const acSizingPowerKW = Math.max(Number(inverter.acPowerKW) || 0, Number(inverter.maxActivePowerKW) || 0);
+    totalAcSizingPowerKW += acSizingPowerKW;
     const operatingCurrentA = acSizingPowerKW * 1000 / (Math.sqrt(3) * inputs.acSystemVoltageV * inputs.acPowerFactor);
-    const designCurrentA = operatingCurrentA * inputs.designCurrentFactor;
-    const breakerA = nextStandardValue(STANDARD_PROTECTION_RATINGS_A, designCurrentA);
+    const designCurrentA = operatingCurrentA * inputs.designCurrentFactorAc;
+    const breakerA = nextStandardValue(protectionRatings, designCurrentA * Number(inputs.ruleContext?.acBreakerDesignMultiplier || 1));
     if (!breakerA) errors.push(`Inverter ${instance.number}: no standard AC breaker size can satisfy ${designCurrentA.toFixed(1)} A.`);
     const cable = chooseAcCableSize({
       operatingCurrentA,
@@ -598,7 +653,9 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
       lineVoltageV: inputs.acSystemVoltageV,
       maxDropPct: inputs.acMaxVoltageDropPct,
       currentDensity: inputs.acCurrentDensityAmm2,
-      tempFactor: inputs.conductorTempFactor
+      tempFactor: inputs.conductorTempFactor,
+      resistivityOhmMm2M: inputs.conductorResistivityOhmMm2M,
+      standardCableSizesMm2: inputs.standardCableSizesMm2
     });
     if (!cable.sizeMm2) errors.push(`Inverter ${instance.number}: required AC cable section exceeds the available standard-size table.`);
     if (cable.dropPct > inputs.acMaxVoltageDropPct + 1e-6) errors.push(`Inverter ${instance.number}: AC voltage drop ${cable.dropPct.toFixed(2)}% exceeds ${inputs.acMaxVoltageDropPct.toFixed(2)}%.`);
@@ -606,11 +663,11 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
     totalAcLossW += Number.isFinite(cable.lossW) ? cable.lossW : 0;
     largestBreakerA = Math.max(largestBreakerA, breakerA || 0);
     maxAcCableSize = Math.max(maxAcCableSize, cable.sizeMm2 || 0);
-    suggestedPeSize = Math.max(suggestedPeSize, suggestedProtectiveEarthSizeMm2(cable.sizeMm2) || 0);
+    suggestedPeSize = Math.max(suggestedPeSize, suggestedProtectiveEarthSizeMm2(cable.sizeMm2, inputs.ruleContext) || 0);
     rows.push({
       circuit: `Inverter ${instance.number} AC feeder`, qty: 1, designCurrentA, oneWayLengthM: inputs.acFeederOneWayLengthM,
       cableSizeMm2: cable.sizeMm2, voltageV: inputs.acSystemVoltageV, dropPct: cable.dropPct,
-      protection: breakerA ? `${breakerA} A AC breaker + AC isolator; Type 2 AC SPD preliminary` : "No valid breaker size",
+      protection: breakerA ? `${breakerA} A AC breaker + AC isolator; ${inputs.ruleContext?.spdAc || "Type 2 AC SPD preliminary"}` : "No valid breaker size",
       capacityA: cable.capacityA,
       status: cable.sizeMm2 && breakerA && cable.dropPct <= inputs.acMaxVoltageDropPct + 1e-6 && cable.capacityA + 1e-9 >= breakerA ? "pass" : "fail",
       category: "ac-feeder"
@@ -620,17 +677,17 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
       .filter(([key]) => key.startsWith(`${instance.number}:`))
       .map(([, count]) => count);
     const maxParallelAtInverter = inverterMpptCounts.length ? Math.max(...inverterMpptCounts) : 1;
-    const dcIsolationDesignCurrentA = maxParallelAtInverter * module.iscA * inputs.designCurrentFactor;
-    const dcIsolatorA = nextStandardValue(STANDARD_PROTECTION_RATINGS_A, dcIsolationDesignCurrentA);
+    const dcIsolationDesignCurrentA = maxParallelAtInverter * module.iscA * inputs.designCurrentFactorDc;
+    const dcIsolatorA = nextStandardValue(protectionRatings, dcIsolationDesignCurrentA * Number(inputs.ruleContext?.dcIsolatorDesignMultiplier || 1));
     const dcIsolationVoltageV = Math.min(Number(inverter.maxInputVoltageV) || Infinity, Number(module.maxSystemVoltageV) || Infinity);
     rows.push({
       circuit: `Inverter ${instance.number} DC isolation / SPD`, qty: 1, designCurrentA: dcIsolationDesignCurrentA, oneWayLengthM: 0,
       cableSizeMm2: null, voltageV: Number.isFinite(dcIsolationVoltageV) ? dcIsolationVoltageV : 0, dropPct: 0,
-      protection: dcIsolatorA ? `${dcIsolatorA} A DC isolator at ≥ ${Number.isFinite(dcIsolationVoltageV) ? dcIsolationVoltageV.toFixed(0) : "system"} VDC + Type 2 DC SPD preliminary` : "No valid DC isolator rating",
+      protection: dcIsolatorA ? `${dcIsolatorA} A DC isolator at ≥ ${Number.isFinite(dcIsolationVoltageV) ? dcIsolationVoltageV.toFixed(0) : "system"} VDC + ${inputs.ruleContext?.spdDc || "Type 2 DC SPD preliminary"}` : "No valid DC isolator rating",
       capacityA: 0, status: dcIsolatorA ? "pass" : "fail", category: "protection"
     });
 
-    const peSize = suggestedProtectiveEarthSizeMm2(cable.sizeMm2);
+    const peSize = suggestedProtectiveEarthSizeMm2(cable.sizeMm2, inputs.ruleContext);
     rows.push({
       circuit: `Inverter ${instance.number} protective earth`, qty: 1, designCurrentA: 0, oneWayLengthM: inputs.acFeederOneWayLengthM,
       cableSizeMm2: peSize, voltageV: 0, dropPct: 0,
@@ -646,10 +703,13 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
   const dcSizes = [...new Set(rows.filter(row => row.category === "dc-string" && row.cableSizeMm2).map(row => row.cableSizeMm2))].sort((a, b) => a - b);
   const acSizes = [...new Set(acRows.filter(row => row.cableSizeMm2).map(row => row.cableSizeMm2))].sort((a, b) => a - b);
   const dcLossPct = electrical.totalDcKW > 0 ? totalDcLossW / (electrical.totalDcKW * 1000) * 100 : 0;
-  const acLossPct = electrical.totalAcKW > 0 ? totalAcLossW / (electrical.totalAcKW * 1000) * 100 : 0;
+  // Use the same power basis as the feeder current calculation. Using nominal
+  // rated AC power here while sizing current from max active power inflates the
+  // reported percentage whenever maxActivePowerKW > acPowerKW.
+  const acLossPct = totalAcSizingPowerKW > 0 ? totalAcLossW / (totalAcSizingPowerKW * 1000) * 100 : 0;
   if (dcLossPct > 3) warnings.push(`Estimated rated-power DC cable loss is ${dcLossPct.toFixed(2)}%; review routing/length assumptions.`);
   if (acLossPct > 3) warnings.push(`Estimated rated-power AC cable loss is ${acLossPct.toFixed(2)}%; review feeder assumptions.`);
-  warnings.push("Fault-current, breaking-capacity, installation-method ampacity/derating, disconnection-time, and jurisdiction-specific protection checks are not yet part of this preliminary layer.");
+  warnings.push(`Active engineering rules: ${inputs.ruleContext?.packId || "legacy"}@${inputs.ruleContext?.packVersion || "compat"} (${inputs.ruleContext?.fingerprint || "no fingerprint"}). Full fault-current, breaking-capacity, disconnection-time, equipment coordination and jurisdictional compliance remain outside this preliminary layer.`);
 
   const rowFailures = rows.filter(row => row.status === "fail").length;
   if (rowFailures) errors.push(`${rowFailures} detailed electrical circuit row(s) fail the configured preliminary rules.`);
@@ -658,10 +718,13 @@ function calculateDetailedElectricalDesign(baseElectrical = electricalDesignResu
   return {
     status, label,
     message: errors.length ? errors.join(" ") : `${rows.length} circuit row(s) sized for conductor section, voltage drop, and preliminary protection coordination.`,
-    inputs, rows, errors, warnings, totalDcLossW, totalAcLossW, dcLossPct, acLossPct,
+    inputs, rows, errors, warnings, totalDcLossW, totalAcLossW, totalAcSizingPowerKW, dcLossPct, acLossPct,
     maxDcDropPct, maxAcDropPct, dcSizes, acSizes, largestBreakerA, suggestedPeSize,
+    conductorMaterial: inputs.conductorMaterial,
+    ruleContext: inputs.ruleContext,
+    ruleProvenance: inputs.ruleContext ? { packId: inputs.ruleContext.packId, packVersion: inputs.ruleContext.packVersion, fingerprint: inputs.ruleContext.fingerprint, jurisdiction: inputs.ruleContext.jurisdiction, standardReference: inputs.ruleContext.standardReference } : null,
     module, inverter, electrical
   };
 }
 
-globalThis.SolarPVElectricalEngineModule = Object.freeze({version:"1.7.0",deterministic:true,functions:Object.freeze(["getElectricalDesignInputs", "panelElectricalGroupKey", "getSortedPanelsForElectricalGroup", "balancedStringLengths", "chooseStringPartition", "calculateElectricalDesign", "clearPanelElectricalAssignments", "applyPanelElectricalAssignments", "nextStandardValue", "getDetailedElectricalInputs", "conductorResistanceOhm", "chooseDcCableSize", "chooseAcCableSize", "suggestedProtectiveEarthSizeMm2", "calculateDetailedElectricalDesign"])});
+globalThis.SolarPVElectricalEngineModule = Object.freeze({version:"2.1.0",deterministic:true,functions:Object.freeze(["getElectricalDesignInputs", "panelElectricalGroupKey", "getSortedPanelsForElectricalGroup", "balancedStringLengths", "chooseStringPartition", "calculateElectricalDesign", "clearPanelElectricalAssignments", "applyPanelElectricalAssignments", "nextStandardValue", "getDetailedElectricalInputs", "conductorResistanceOhm", "chooseDcCableSize", "chooseAcCableSize", "suggestedProtectiveEarthSizeMm2", "calculateDetailedElectricalDesign"])});

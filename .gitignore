@@ -1,3 +1,28 @@
-.solar_pv_data/
+# Python bytecode, virtual environments, and test/tool caches
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Solar PV runtime repository data (local/user state)
+.solar_pv_data/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Editor/IDE metadata
+.vscode/
+.idea/
+
+# OS metadata
+.DS_Store
+Thumbs.db

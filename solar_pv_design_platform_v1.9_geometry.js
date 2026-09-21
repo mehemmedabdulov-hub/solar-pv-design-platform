@@ -1,7 +1,7 @@
 "use strict";
 
-/* Solar PV Design Platform v1.7 - geometry/buildable-area engine
-   Extracted from the current Alpha5 deterministic engine without calculation rewrites. */
+/* Solar PV Design Platform v1.9 - geometry/buildable-area engine
+   Retained from the verified v1.7 deterministic engine and carried forward in the cumulative v1.9 architecture. */
 
 function getPolygonPoints(layer) {
   const allLatLngs = layer.getLatLngs();
@@ -388,4 +388,4 @@ function panelFitsBuildableGeometry(panelPolygon, origin, buildableFeature) {
   }
 }
 
-globalThis.SolarPVGeometryEngineModule = Object.freeze({version:"1.7.0",deterministic:true,functions:Object.freeze(["getPolygonPoints", "getLayerArea", "latLngAsXY", "pointOnSegment", "pointInsidePolygonXY", "orientationValue", "segmentsIntersect", "polygonEdgesIntersect", "polygonsIntersect", "pointToSegmentDistance", "polygonMinimumDistance", "pointStrictlyInsidePolygonXY", "segmentsProperlyIntersect", "polygonEdgesProperlyIntersect", "polygonScanlineIntervals", "polygonInteriorsOverlapByScanline", "findPolygonInteriorPoint", "polygonsInteriorOverlap", "closeCoordinateRing", "leafletLayerToTurfPolygon", "exclusionClearanceDistance", "calculateBuildableGeometryForFace", "rebuildBuildableGeometry", "getBuildableGeometryRecord", "localPolygonToTurfFeature", "panelFitsBuildableGeometry"])});
+globalThis.SolarPVGeometryEngineModule = Object.freeze({version:"1.9.0",deterministic:true,functions:Object.freeze(["getPolygonPoints", "getLayerArea", "latLngAsXY", "pointOnSegment", "pointInsidePolygonXY", "orientationValue", "segmentsIntersect", "polygonEdgesIntersect", "polygonsIntersect", "pointToSegmentDistance", "polygonMinimumDistance", "pointStrictlyInsidePolygonXY", "segmentsProperlyIntersect", "polygonEdgesProperlyIntersect", "polygonScanlineIntervals", "polygonInteriorsOverlapByScanline", "findPolygonInteriorPoint", "polygonsInteriorOverlap", "closeCoordinateRing", "leafletLayerToTurfPolygon", "exclusionClearanceDistance", "calculateBuildableGeometryForFace", "rebuildBuildableGeometry", "getBuildableGeometryRecord", "localPolygonToTurfFeature", "panelFitsBuildableGeometry"])});

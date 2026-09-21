@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "source": "index.html:migrateProjectSnapshot",
+  "supportedLegacySchemasTested": [
+    "1.7-alpha6",
+    "1.8",
+    "1.8-final",
+    "1.8-rulepacks",
+    "1.9"
+  ],
+  "projectSchema": "2.0",
+  "rulePackSchema": "2.0.0",
+  "ruleBasisDriftRejected": true,
+  "unknownSchemaRejected": true
+}

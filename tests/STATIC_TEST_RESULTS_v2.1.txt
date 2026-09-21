@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "applicationVersion": "2.1",
+  "projectSchema": "2.0",
+  "activeV21Modules": [
+    "solar_pv_design_platform_v2.1_core.js",
+    "solar_pv_design_platform_v2.1_layout.js",
+    "solar_pv_design_platform_v2.1_rulepacks.js",
+    "solar_pv_design_platform_v2.1_electrical.js",
+    "solar_pv_design_platform_v2.1_energy.js",
+    "solar_pv_design_platform_v2.1_finance.js"
+  ],
+  "retainedCompatibilityModules": [
+    "solar_pv_design_platform_v1.9_repository.js",
+    "solar_pv_design_platform_v1.9_geometry.js",
+    "solar_pv_design_platform_v1.9_rules.js",
+    "solar_pv_design_platform_v1.9_worker.js"
+  ],
+  "externalBrowserLibraries": [
+    "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js",
+    "https://cdn.jsdelivr.net/npm/@turf/turf@7.3.0/turf.min.js"
+  ],
+  "sections": 17,
+  "calculationCorrectionsWired": true,
+  "databaseFilenamePreserved": true
+}

@@ -1,12 +1,16 @@
 "use strict";
 
 (function initSolarPVCore(global) {
-  const APP_VERSION = "1.7";
-  const APP_VERSION_LABEL = "Version 1.7";
-  const PROJECT_SCHEMA_VERSION = "1.7-alpha6";
+  const APP_VERSION = "2.1";
+  const APP_VERSION_LABEL = "Version 2.1";
+  const PROJECT_SCHEMA_VERSION = "2.0";
 
-  const PROJECT_STORAGE_KEY = "solarPvDesignPlatform.v1.7.alpha6.project";
+  const PROJECT_STORAGE_KEY = "solarPvDesignPlatform.v2.1.project";
   const LEGACY_PROJECT_STORAGE_KEYS = Object.freeze([
+    "solarPvDesignPlatform.v2.0.project",
+    "solarPvDesignPlatform.v1.9.project",
+    "solarPvDesignPlatform.v1.8.project",
+    "solarPvDesignPlatform.v1.7.alpha6.project",
     "solarPvDesignPlatform.v1.7.alpha5.project",
     "solarPvDesignPlatform.v1.7.alpha4.project",
     "solarPvDesignPlatform.v1.7.alpha3.project",
@@ -23,6 +27,11 @@
 
   const SUPPORTED_PROJECT_SCHEMA_VERSIONS = new Set([
     PROJECT_SCHEMA_VERSION,
+    "1.9",
+    "1.8",
+    "1.8-final",
+    "1.8-rulepacks",
+    "1.7-alpha6",
     "1.7-alpha5",
     "1.7-alpha4",
     "1.7-alpha3",
@@ -36,12 +45,16 @@
   ]);
 
   const PROJECT_REVISION_INDEX_KEY =
-    "solarPvDesignPlatform.v1.7.alpha6.revisionIndex";
+    "solarPvDesignPlatform.v2.1.revisionIndex";
 
   const PROJECT_REVISION_KEY_PREFIX =
-    "solarPvDesignPlatform.v1.7.alpha6.revision";
+    "solarPvDesignPlatform.v2.1.revision";
 
   const LEGACY_PROJECT_REVISION_INDEX_KEYS = Object.freeze([
+    "solarPvDesignPlatform.v2.0.revisionIndex",
+    "solarPvDesignPlatform.v1.9.revisionIndex",
+    "solarPvDesignPlatform.v1.8.revisionIndex",
+    "solarPvDesignPlatform.v1.7.alpha6.revisionIndex",
     "solarPvDesignPlatform.v1.7.alpha5.revisionIndex",
     "solarPvDesignPlatform.v1.7.alpha4.revisionIndex",
     "solarPvDesignPlatform.v1.7.alpha3.revisionIndex",
@@ -50,6 +63,10 @@
   ]);
 
   const LEGACY_PROJECT_REVISION_KEY_PREFIXES = Object.freeze([
+    "solarPvDesignPlatform.v2.0.revision",
+    "solarPvDesignPlatform.v1.9.revision",
+    "solarPvDesignPlatform.v1.8.revision",
+    "solarPvDesignPlatform.v1.7.alpha6.revision",
     "solarPvDesignPlatform.v1.7.alpha5.revision",
     "solarPvDesignPlatform.v1.7.alpha4.revision",
     "solarPvDesignPlatform.v1.7.alpha3.revision",
@@ -60,9 +77,13 @@
   const MAX_BROWSER_PROJECT_REVISIONS = 8;
 
   const REMOTE_REPOSITORY_SETTINGS_KEY =
-    "solarPvDesignPlatform.v1.7.alpha6.remoteSettings";
+    "solarPvDesignPlatform.v2.1.remoteSettings";
 
   const LEGACY_REMOTE_REPOSITORY_SETTINGS_KEYS = Object.freeze([
+    "solarPvDesignPlatform.v2.0.remoteSettings",
+    "solarPvDesignPlatform.v1.9.remoteSettings",
+    "solarPvDesignPlatform.v1.8.remoteSettings",
+    "solarPvDesignPlatform.v1.7.alpha6.remoteSettings",
     "solarPvDesignPlatform.v1.7.alpha5.remoteSettings",
     "solarPvDesignPlatform.v1.7.alpha4.remoteSettings",
     "solarPvDesignPlatform.v1.7.alpha3.remoteSettings",
@@ -70,9 +91,13 @@
   ]);
 
   const REMOTE_SYNC_QUEUE_KEY =
-    "solarPvDesignPlatform.v1.7.alpha6.remoteSyncQueue";
+    "solarPvDesignPlatform.v2.1.remoteSyncQueue";
 
   const LEGACY_REMOTE_SYNC_QUEUE_KEYS = Object.freeze([
+    "solarPvDesignPlatform.v2.0.remoteSyncQueue",
+    "solarPvDesignPlatform.v1.9.remoteSyncQueue",
+    "solarPvDesignPlatform.v1.8.remoteSyncQueue",
+    "solarPvDesignPlatform.v1.7.alpha6.remoteSyncQueue",
     "solarPvDesignPlatform.v1.7.alpha5.remoteSyncQueue",
     "solarPvDesignPlatform.v1.7.alpha4.remoteSyncQueue",
     "solarPvDesignPlatform.v1.7.alpha3.remoteSyncQueue",
@@ -82,10 +107,10 @@
   const MAX_REMOTE_SYNC_QUEUE = 20;
 
   const DETERMINISTIC_WORKER_SCRIPT =
-    "solar_pv_design_platform_v1.7_worker.js";
+    "solar_pv_design_platform_v1.9_worker.js";
 
   const DETERMINISTIC_WORKER_VERSION =
-    "1.7.0";
+    "1.9.0";
 
   const DETERMINISTIC_WORKER_TASK_TIMEOUT_MS =
     45000;
@@ -101,28 +126,28 @@
     Object.freeze({
       id: "layout",
       label: "PV layout",
-      version: "1.6.0",
+      version: "2.1.0",
       execution: "main-thread",
       deterministic: true
     }),
     Object.freeze({
       id: "electrical",
       label: "String / MPPT electrical",
-      version: "1.6.0",
+      version: "2.1.0",
       execution: "main-thread",
       deterministic: true
     }),
     Object.freeze({
       id: "detail-electrical",
       label: "Detailed electrical",
-      version: "1.6.0",
+      version: "2.1.0",
       execution: "main-thread",
       deterministic: true
     }),
     Object.freeze({
       id: "energy",
       label: "Monthly energy",
-      version: "1.6.0",
+      version: "2.1.0",
       execution: "main-thread",
       deterministic: true
     }),
@@ -136,7 +161,7 @@
     Object.freeze({
       id: "finance",
       label: "Financial analysis",
-      version: "1.6.0",
+      version: "2.1.0",
       execution: "main-thread",
       deterministic: true
     }),
@@ -150,14 +175,35 @@
     Object.freeze({
       id: "point-cloud-import",
       label: "3D point-cloud summarization",
-      version: "1.7.0",
+      version: "1.9.0",
       execution: "external-worker-with-main-thread-fallback",
+      deterministic: true
+    }),
+    Object.freeze({
+      id: "engineering-rule-packs",
+      label: "Configurable engineering rule packs",
+      version: "1.8.0",
+      execution: "main-thread",
+      deterministic: true
+    }),
+    Object.freeze({
+      id: "engineering-rule-audit",
+      label: "Rule scenario comparison / decision trace",
+      version: "1.9.0",
+      execution: "main-thread",
+      deterministic: true
+    }),
+    Object.freeze({
+      id: "engineering-rule-contract",
+      label: "Formal rule-pack contract / validation / canonicalization",
+      version: "2.0.0-alpha.1",
+      execution: "main-thread",
       deterministic: true
     }),
     Object.freeze({
       id: "persistence",
       label: "Project repository",
-      version: "1.7.0",
+      version: "1.9.0",
       execution: "browser-repository + HTTP/SQLite server",
       deterministic: true
     })
@@ -167,7 +213,7 @@
     Object.freeze({
       id: "application-shell",
       label: "Application shell / UI",
-      version: "1.7.0",
+      version: "2.1.0",
       owns: "DOM wiring, map interaction, form state, rendering",
       interface: "UI events + explicit engine calls",
       extraction: "Inline shell"
@@ -175,7 +221,7 @@
     Object.freeze({
       id: "architecture-core",
       label: "Architecture core",
-      version: "1.7.0",
+      version: "2.1.0",
       owns: "Versions, storage/schema keys, manifests, pure validation helpers",
       interface: "window.SolarPVCore",
       extraction: "External module extracted"
@@ -191,7 +237,7 @@
     Object.freeze({
       id: "electrical",
       label: "Electrical engineering",
-      version: "1.6.0",
+      version: "2.1.0",
       owns: "Strings, MPPTs, cables, protection",
       interface: "Structured electrical result objects",
       extraction: "Inline legacy core"
@@ -199,7 +245,7 @@
     Object.freeze({
       id: "energy",
       label: "Solar + energy",
-      version: "1.6.0",
+      version: "2.1.0",
       owns: "Resource transposition, temperature, loss chain, monthly energy",
       interface: "Structured simulation result",
       extraction: "Inline legacy core"
@@ -207,7 +253,7 @@
     Object.freeze({
       id: "outputs-commercial",
       label: "Outputs + finance",
-      version: "1.6.0",
+      version: "2.1.0",
       owns: "SLD, BOM, report, cash flow",
       interface: "Electrical object model + energy result",
       extraction: "Inline legacy core"
@@ -215,15 +261,31 @@
     Object.freeze({
       id: "shading",
       label: "3D shading",
-      version: "1.7.0",
+      version: "1.9.0",
       owns: "Point import, obstruction index, LOS sampling",
       interface: "Canonical local ENU obstruction records",
       extraction: "Worker-assisted boundary"
     }),
     Object.freeze({
+      id: "engineering-rules",
+      label: "Engineering rule packs + audit",
+      version: "1.9.0",
+      owns: "Frozen v1.9 engineering values, deterministic calculations, legacy rule fingerprints and rule trace",
+      interface: "window.SolarPVRulePacks",
+      extraction: "Frozen compatibility module retained"
+    }),
+    Object.freeze({
+      id: "engineering-rule-contract",
+      label: "v2.1 rule-pack contract",
+      version: "2.1.0",
+      owns: "Schema validation, explicit units, capability boundaries, canonicalization, import/export, overlay policy and compatibility adapter metadata",
+      interface: "window.SolarPVRulePackContract",
+      extraction: "New external module"
+    }),
+    Object.freeze({
       id: "repository",
       label: "Persistence + revisions",
-      version: "1.7.0",
+      version: "1.9.0",
       owns: "Browser revisions and HTTP repository adapter",
       interface: "window.SolarPVRepository factories",
       extraction: "External module extracted"
@@ -231,7 +293,7 @@
     Object.freeze({
       id: "server-repository",
       label: "Server + database repository",
-      version: "1.7.0",
+      version: "1.9.0",
       owns: "Same-origin REST API, immutable remote revisions, SQLite persistence",
       interface: "HTTP /api/solar-pv + SQLite",
       extraction: "External Python service extracted"
@@ -239,7 +301,7 @@
     Object.freeze({
       id: "execution",
       label: "Deterministic execution",
-      version: "1.7.0",
+      version: "1.9.0",
       owns: "Worker lifecycle, task protocol, timeout/fallback metrics",
       interface: "run(task, payload, transfer, fallback)",
       extraction: "External worker module extracted"
@@ -250,77 +312,91 @@
     Object.freeze({
       id: "architecture-core",
       label: "Architecture core module",
-      version: "1.7.0",
+      version: "2.1.0",
       role: "Owns version/schema/storage constants and architecture manifests",
       networkRequired: false
     }),
     Object.freeze({
       id: "repository-contract",
       label: "Repository contract",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Normalizes local and HTTP project-repository operations",
+      networkRequired: false
+    }),
+    Object.freeze({
+      id: "engineering-rule-service",
+      label: "Frozen v1.9 engineering rule service",
+      version: "1.9.0",
+      role: "Preserves v1.9 rule resolution, legacy fingerprints, scenario comparisons and deterministic design traces",
+      networkRequired: false
+    }),
+    Object.freeze({
+      id: "engineering-rule-contract-service",
+      label: "v2.1 rule-pack contract service",
+      version: "2.1.0",
+      role: "Validates/canonicalizes/imports/exports rule-pack artifacts and enforces capability and overlay contracts before v1.9 compatibility calculations",
       networkRequired: false
     }),
     Object.freeze({
       id: "revision-service",
       label: "Revision service",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Immutable revision chain and local retention in external repository module",
       networkRequired: false
     }),
     Object.freeze({
       id: "working-copy",
       label: "Working-copy tracker",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Detects committed vs uncommitted project state",
       networkRequired: false
     }),
     Object.freeze({
       id: "remote-http",
       label: "HTTP repository adapter",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Health, push, pull, and revision API client in external repository module",
       networkRequired: true
     }),
     Object.freeze({
       id: "server-api",
       label: "Same-origin repository API",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Serves the application plus project/revision REST endpoints",
       networkRequired: false
     }),
     Object.freeze({
       id: "sqlite-repository",
       label: "SQLite revision store",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Persists immutable project revisions and current-revision pointers",
       networkRequired: false
     }),
     Object.freeze({
       id: "sync-queue",
       label: "Local-first sync queue",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Queues failed/automatic remote revision pushes",
       networkRequired: false
     }),
     Object.freeze({
       id: "module-boundaries",
       label: "Module-boundary registry",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Declares ownership and physical extraction state",
       networkRequired: false
     }),
     Object.freeze({
       id: "execution-service",
       label: "Deterministic execution service",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Runs supported heavy tasks in a worker with explicit deterministic fallback",
       networkRequired: false
     }),
     Object.freeze({
       id: "worker-adapter",
       label: "Point-cloud worker adapter",
-      version: "1.7.0",
+      version: "1.9.0",
       role: "Transfers packed point buffers to the physically separate worker module",
       networkRequired: false
     })

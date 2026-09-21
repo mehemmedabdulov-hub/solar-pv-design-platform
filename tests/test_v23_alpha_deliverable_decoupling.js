@@ -1,0 +1,14 @@
+"use strict";
+const assert = require("assert");
+const alpha = require("../v23-alpha-controller.js");
+const tracker = alpha.createDeliverableInstrumentation();
+assert.deepStrictEqual(tracker.snapshot(), { genericRefreshes:0, deliverableBuilds:0, staleMarks:0, explicitGenerations:0 });
+tracker.recordGenericRefresh();
+tracker.recordStaleMark();
+assert.deepStrictEqual(tracker.snapshot(), { genericRefreshes:1, deliverableBuilds:0, staleMarks:1, explicitGenerations:0 }, "generic refresh/stale marking must not imply a deliverable build");
+tracker.recordExplicitGeneration();
+tracker.recordBuild();
+assert.deepStrictEqual(tracker.snapshot(), { genericRefreshes:1, deliverableBuilds:1, staleMarks:1, explicitGenerations:1 });
+tracker.reset();
+assert.deepStrictEqual(tracker.snapshot(), { genericRefreshes:0, deliverableBuilds:0, staleMarks:0, explicitGenerations:0 });
+console.log("v2.3 Alpha A3 deliverable decoupling instrumentation: PASS");

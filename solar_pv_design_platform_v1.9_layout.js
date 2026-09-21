@@ -1,7 +1,7 @@
 "use strict";
 
-/* Solar PV Design Platform v1.7 - PV layout engine
-   Extracted from the current Alpha5 deterministic engine without calculation rewrites. */
+/* Solar PV Design Platform v1.9 - PV layout engine
+   Retained from the verified v1.7 deterministic engine and carried forward in the cumulative v1.9 architecture. */
 
 function getLayoutOrigin(latLngPoints) {
   let lat = 0;
@@ -401,4 +401,4 @@ function buildCandidateLayout(settings) {
   return { faceLayouts, totalPanelCount };
 }
 
-globalThis.SolarPVLayoutEngineModule = Object.freeze({version:"1.7.0",deterministic:true,functions:Object.freeze(["getLayoutOrigin", "latLngToLocalMeters", "localMetersToLatLng", "createLayoutBasis", "localToGrid", "gridToLocal", "createPanelRectangle", "panelFitsSite", "normalizeLayoutAxisAzimuth", "layoutAxisDifference", "layoutAzimuthFromVector", "uniqueLayoutAzimuths", "getMajorRoofEdgeAzimuths", "getGridPhaseFractions", "getOrientationCandidates", "getAzimuthCandidates", "countGridRuns", "calculateCandidatePracticality", "isBetterLayoutCandidate", "evaluateLayoutPhase", "buildCandidateLayoutForFace", "buildCandidateLayout"])});
+globalThis.SolarPVLayoutEngineModule = Object.freeze({version:"1.9.0",deterministic:true,functions:Object.freeze(["getLayoutOrigin", "latLngToLocalMeters", "localMetersToLatLng", "createLayoutBasis", "localToGrid", "gridToLocal", "createPanelRectangle", "panelFitsSite", "normalizeLayoutAxisAzimuth", "layoutAxisDifference", "layoutAzimuthFromVector", "uniqueLayoutAzimuths", "getMajorRoofEdgeAzimuths", "getGridPhaseFractions", "getOrientationCandidates", "getAzimuthCandidates", "countGridRuns", "calculateCandidatePracticality", "isBetterLayoutCandidate", "evaluateLayoutPhase", "buildCandidateLayoutForFace", "buildCandidateLayout"])});

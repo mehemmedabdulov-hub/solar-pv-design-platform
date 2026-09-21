@@ -1,0 +1,104 @@
+name: v2.3 Beta B1 Four-Pass Gate
+
+on:
+  push:
+    branches:
+      - release/v2.3-beta-gamma-ready
+
+permissions:
+  contents: write
+
+jobs:
+  b1:
+    if: \${{ github.event.head_commit.message == 'Run v2.3 Beta B1 four-pass gate' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/v2.3-beta-gamma-ready
+          fetch-depth: 0
+
+      - name: Decode B1 candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .beta-bootstrap/b1_payload.b64 > /tmp/b1_payload.zip
+          echo "f68bfe878f0f6b0a9d85dc0f190d481309131192f00d43d51416b3cc31090d6f  /tmp/b1_payload.zip" | sha256sum -c -
+          rm -rf /tmp/b1
+          mkdir -p /tmp/b1
+          unzip -q /tmp/b1_payload.zip -d /tmp/b1
+
+      - name: Replace branch tree with B1 candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .github/workflows/beta-b1-bootstrap.yml /tmp/beta-b1-bootstrap.yml
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a /tmp/b1/. .
+          mkdir -p .github/workflows
+          cp /tmp/beta-b1-bootstrap.yml .github/workflows/beta-b1-bootstrap.yml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install browser gate dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          python -m playwright install --with-deps chromium
+
+      - name: B1 Gate 1 structural and protected
+        shell: bash
+        run: |
+          set -o pipefail
+          (python3 tests/test_v23_beta_b1_static.py && node --check project-state-v2.3.js && node --check workflow.js && python3 tests/test_v23_alpha_protected.py) | tee verification_logs/B1_gate1_static.log
+
+      - name: B1 Gate 2 targeted behavior
+        shell: bash
+        run: |
+          set -o pipefail
+          node tests/test_v23_beta_project_state.js | tee verification_logs/B1_gate2_targeted.log
+
+      - name: B1 Gate 3 inherited Alpha regression
+        shell: bash
+        run: |
+          set -o pipefail
+          bash tests/run_v23_alpha_verification.sh | tee verification_logs/B1_gate3_alpha.log
+
+      - name: B1 Gate 4 real browser round-trip
+        shell: bash
+        run: |
+          set -euo pipefail
+          PORT=8011
+          DB_PATH="$(mktemp -u /tmp/solar-beta-b1-XXXX.sqlite3)"
+          python3 solar_pv_design_platform_v2.1_server.py --host 127.0.0.1 --port "$PORT" --db "$DB_PATH" >/tmp/solar-beta-b1-server.log 2>&1 &
+          SERVER_PID=$!
+          cleanup(){ kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true; rm -f "$DB_PATH" "$DB_PATH-shm" "$DB_PATH-wal"; }
+          trap cleanup EXIT
+          for _ in $(seq 1 30); do
+            if python3 - "$PORT" <<'PY' >/dev/null 2>&1
+import sys, urllib.request
+with urllib.request.urlopen(f"http://127.0.0.1:{sys.argv[1]}/api/solar-pv/health", timeout=1) as r:
+    assert r.status == 200
+PY
+            then break; fi
+            sleep 1
+          done
+          set -o pipefail
+          python3 tests/test_v23_beta_browser_state.py --base-url "http://127.0.0.1:$PORT/index.html" | tee verification_logs/B1_gate4_runtime.log
+
+      - name: Commit green B1 candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "B1 ProjectState four-pass gate green"
+          git push origin HEAD:release/v2.3-beta-gamma-ready
